@@ -21,6 +21,15 @@ ENTRYPOINT echo "Hello world"
 * COPY takes in a src and destination. It only lets you copy in a local file or directory from your host (the machine building the Docker image) into the Docker image itself.
 * ADD lets you do that too, but it also supports 2 other sources. First, you can use a URL instead of a local file / directory. Secondly, you can extract a tar file from the source directly into the destination.
 
+## Chain Your Docker RUN Instructions to Shrink Your Images
+
+```bash
+RUN wget -O myfile.tar.gz http://example.com/myfile.tar.gz \
+    && tar -xvf myfile.tar.gz -C /usr/src/myapp \
+    && rm myfile.tar.gz
+```
+* This is much better. Docker will only create 1 layer, and you still performed all 3 tasks. Shrinkage! You’ll even get faster build times too because each layer adds a bit of build time.
+
 ## Difference between an Array and String Based CMD
 
 * The official terms for this are exec form and shell form commands. Both do nearly the same thing, but there's an important difference.
