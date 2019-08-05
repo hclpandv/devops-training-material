@@ -33,3 +33,11 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62448515-aa777680-b785-11e9-8cdf-b21aac7688a4.png)
 
+* `docker inspect <image_name>` will provide the config and manifest of that image
+
+
+![image](https://user-images.githubusercontent.com/13016162/62448949-a3049d00-b786-11e9-9ebf-171e4d6651f1.png)
+
+and Layers too if you scroll it down
+
+![image](https://user-images.githubusercontent.com/13016162/62449000-c0396b80-b786-11e9-84de-b377fa50dfa9.png)
