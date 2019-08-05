@@ -17,3 +17,9 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62444806-24a2fd80-b77c-11e9-834b-082ddf1fab97.png)
 
+### Behind the sceene
+
+* The storage driver keeps and manages the images cached locally
+
+![image](https://user-images.githubusercontent.com/13016162/62444952-a2ff9f80-b77c-11e9-8261-c1d5ae5a18af.png)
+
