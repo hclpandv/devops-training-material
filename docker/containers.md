@@ -32,4 +32,9 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62455571-545dff80-b794-11e9-81cc-faa74e381f49.png)
 
+* You can also execute a command against a container rather running a program 
+
+![image](https://user-images.githubusercontent.com/13016162/62456009-23ca9580-b795-11e9-8221-6618621cba55.png)
+
+
 
