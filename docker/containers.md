@@ -21,3 +21,8 @@
 * You can stop a container `docker container stop <container_name>` or `docker container stop <container_id>` You can use shorthand to provide the ID value only to its uniquness
 
 ![image](https://user-images.githubusercontent.com/13016162/62454652-5d4dd180-b792-11e9-81d8-933ab72fa603.png)
+
+* `docker container stop` and `docker stop` is same. `container` keyword is almost reduntant since docker is a container in itself ;)
+* `docker rm <container_id>` will remove it
+
+![image](https://user-images.githubusercontent.com/13016162/62455042-262bf000-b793-11e9-8f58-24c7918960ab.png)
