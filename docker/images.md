@@ -1,3 +1,5 @@
+# Docker images deep dive
+
 * `docker pull <image_name>` pulls the image from registry (default is docker hub | docker.io)
 
 ![image](https://user-images.githubusercontent.com/13016162/62443900-bb21ef80-b779-11e9-9835-b5d26a9c320e.png)
