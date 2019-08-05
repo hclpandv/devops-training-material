@@ -8,7 +8,7 @@
 
 * Pulling an Image is a 2 step process (from docker.io or any other registry i.e. google container registry aka gcr.io etc)
 
-* It pulls a fat manifest and then checks for platform architecture to pull actual image manifest.
+* It pulls a fat manifest and then checks for OS type and architecture to pull actual image manifest.
 * images are then pulled in seperate layers
 
 ![image](https://user-images.githubusercontent.com/13016162/62444324-d4776b80-b77a-11e9-99e1-65edb184e229.png)
