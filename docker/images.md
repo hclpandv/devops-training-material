@@ -29,3 +29,7 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62445452-dbec4400-b77d-11e9-852f-e90c889957c0.png)
 
+* `docker history <image_name>` will show you how the image is built by layers
+
+![image](https://user-images.githubusercontent.com/13016162/62448515-aa777680-b785-11e9-8cdf-b21aac7688a4.png)
+
