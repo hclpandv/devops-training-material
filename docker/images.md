@@ -6,10 +6,9 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62444062-21a70d80-b77a-11e9-81c9-e1d5bcee4371.png)
 
-* Pulling an Image is a 2 step process (from docker.io or any other registry i.e. google container registry aka gcr.io etc)
-
+* Pulling an Image is a 2 step process (from docker.io or any other registry i.e. google container registry aka gcr.io etc).
 * It pulls a fat manifest and then checks for OS type and architecture to pull actual image manifest.
-* images are then pulled in seperate layers
+* images are then pulled in seperate layers.
 
 ![image](https://user-images.githubusercontent.com/13016162/62444324-d4776b80-b77a-11e9-99e1-65edb184e229.png)
 
@@ -34,7 +33,6 @@
 ![image](https://user-images.githubusercontent.com/13016162/62448515-aa777680-b785-11e9-8cdf-b21aac7688a4.png)
 
 * `docker inspect <image_name>` will provide the config and manifest of that image
-
 
 ![image](https://user-images.githubusercontent.com/13016162/62448949-a3049d00-b786-11e9-9ebf-171e4d6651f1.png)
 
