@@ -6,4 +6,7 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62452100-2628f180-b78d-11e9-8e0a-f9fddc6984af.png)
 
+* `docker container ls` OR `docker ps` shows active containers
+* `docker ps -a` Includes exited containers too
 
+![image](https://user-images.githubusercontent.com/13016162/62452350-a0597600-b78d-11e9-96aa-68f504609fbe.png)
