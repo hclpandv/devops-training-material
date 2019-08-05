@@ -23,3 +23,7 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62444952-a2ff9f80-b77c-11e9-8261-c1d5ae5a18af.png)
 
+* Lets browse the `Docker Root Dir: /var/lib/docker` to inspect the local images
+
+![image](https://user-images.githubusercontent.com/13016162/62445124-202b1480-b77d-11e9-9419-34c2b3982b1e.png)
+
