@@ -18,6 +18,10 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62454318-b6693580-b791-11e9-9bf0-c2ba1df2f99a.png)
 
+* You can also start a container assigning it a name
+
+![image](https://user-images.githubusercontent.com/13016162/62457277-14991700-b798-11e9-969f-ea505d6b207f.png)
+
 * You can stop a container `docker container stop <container_name>` or `docker container stop <container_id>` You can use shorthand to provide the ID value only to its uniquness
 
 ![image](https://user-images.githubusercontent.com/13016162/62454652-5d4dd180-b792-11e9-81d8-933ab72fa603.png)
