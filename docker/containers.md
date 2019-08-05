@@ -9,7 +9,6 @@
 * Observe in the above example that one process is running i.e. `sh` 
 * microservices architecture reccomends to run a container limited to one process implementing one service, however docker container supports multiple processes to run inside a container.
 
-* `docker container ls` OR `docker ps` shows active containers
-* `docker ps -a` Includes exited containers too
+* `docker container ls` OR `docker ps` shows active containers, `docker ps -a` Includes exited containers too
 
 ![image](https://user-images.githubusercontent.com/13016162/62452350-a0597600-b78d-11e9-96aa-68f504609fbe.png)
