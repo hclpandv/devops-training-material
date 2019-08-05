@@ -23,6 +23,7 @@
 ![image](https://user-images.githubusercontent.com/13016162/62454652-5d4dd180-b792-11e9-81d8-933ab72fa603.png)
 
 * `docker container stop` and `docker stop` is same. `container` keyword is almost reduntant since docker is a container in itself ;)
-* `docker rm <container_id>` will remove it
+* `docker rm <container_id>` will remove it and `docker start <container_id>` will start an exited container.
+* Stop and Start a container will persist any data kept in container. however, it is not reccomended to keep any data in a container.
 
 ![image](https://user-images.githubusercontent.com/13016162/62455042-262bf000-b793-11e9-8f58-24c7918960ab.png)
