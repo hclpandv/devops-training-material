@@ -27,3 +27,9 @@
 * Stop and Start a container will persist any data kept in container. however, it is not reccomended to keep any data in a container.
 
 ![image](https://user-images.githubusercontent.com/13016162/62455042-262bf000-b793-11e9-8f58-24c7918960ab.png)
+
+* if you want to access a running container us `docker exec -it <container_id or name> <program_to_start>`
+
+![image](https://user-images.githubusercontent.com/13016162/62455571-545dff80-b794-11e9-81cc-faa74e381f49.png)
+
+
