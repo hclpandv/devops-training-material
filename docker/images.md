@@ -12,3 +12,8 @@
 * images are then pulled in seperate layers
 
 ![image](https://user-images.githubusercontent.com/13016162/62444324-d4776b80-b77a-11e9-99e1-65edb184e229.png)
+
+* Images are hashed for integrity
+
+![image](https://user-images.githubusercontent.com/13016162/62444806-24a2fd80-b77c-11e9-834b-082ddf1fab97.png)
+
