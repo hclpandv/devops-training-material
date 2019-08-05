@@ -14,3 +14,6 @@
 ![image](https://user-images.githubusercontent.com/13016162/62452350-a0597600-b78d-11e9-96aa-68f504609fbe.png)
 
 * If you are into a container on the same terminal you can press `Ctrl+P+Q` to gracefully come out of the container session without existing it. 
+* Lets start multiple containers from the same image
+
+![image](https://user-images.githubusercontent.com/13016162/62454318-b6693580-b791-11e9-9bf0-c2ba1df2f99a.png)
