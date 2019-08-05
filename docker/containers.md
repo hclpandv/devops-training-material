@@ -36,5 +36,9 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62456009-23ca9580-b795-11e9-8221-6618621cba55.png)
 
+* Lets try and remove all containers
+
+![image](https://user-images.githubusercontent.com/13016162/62456363-def32e80-b795-11e9-8a5d-ba4db3c8db5c.png)
+
 
 
