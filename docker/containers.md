@@ -18,12 +18,6 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62454318-b6693580-b791-11e9-9bf0-c2ba1df2f99a.png)
 
-* You can also start a container assigning it a name.
-* Lets quickly run an nginx container with an assigned name and access it via a custom port
-
-![image](https://user-images.githubusercontent.com/13016162/62457912-5d9d9b00-b799-11e9-9011-f0db69e593ca.png)
-![image](https://user-images.githubusercontent.com/13016162/62457958-73ab5b80-b799-11e9-83a8-7cb4228ff428.png)
-
 * You can stop a container `docker container stop <container_name>` or `docker container stop <container_id>` You can use shorthand to provide the ID value only to its uniquness
 
 ![image](https://user-images.githubusercontent.com/13016162/62454652-5d4dd180-b792-11e9-81d8-933ab72fa603.png)
@@ -41,6 +35,13 @@
 * You can also execute a command against a container rather running a program 
 
 ![image](https://user-images.githubusercontent.com/13016162/62456009-23ca9580-b795-11e9-8221-6618621cba55.png)
+
+* You can also start a container assigning it a name.
+* Lets quickly run an nginx container with an assigned name and access it via a custom port
+
+![image](https://user-images.githubusercontent.com/13016162/62457912-5d9d9b00-b799-11e9-9011-f0db69e593ca.png)
+![image](https://user-images.githubusercontent.com/13016162/62457958-73ab5b80-b799-11e9-83a8-7cb4228ff428.png)
+
 
 * Lets try and remove all containers `docker container rm $(docker container ls -aq) -f`
 * docker help shows q in `ls -aq` is an option of quite which shows only container IDs and `-f` to force and remove running containers too
