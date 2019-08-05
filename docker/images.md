@@ -41,3 +41,7 @@
 and Layers too if you scroll it down
 
 ![image](https://user-images.githubusercontent.com/13016162/62449000-c0396b80-b786-11e9-84de-b377fa50dfa9.png)
+
+* Finally `docker image rm <image_name>` OR `docker rmi <image_id>` will remove the locally cached image
+
+![image](https://user-images.githubusercontent.com/13016162/62449222-5bcadc00-b787-11e9-8dec-2feddfe8f01b.png)
