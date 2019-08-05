@@ -17,3 +17,7 @@
 * Lets start multiple containers from the same image
 
 ![image](https://user-images.githubusercontent.com/13016162/62454318-b6693580-b791-11e9-9bf0-c2ba1df2f99a.png)
+
+* You can stop a container `docker container stop <container_name>` or `docker container stop <container_id>` You can use shorthand to provide the ID value only to its uniquness
+
+![image](https://user-images.githubusercontent.com/13016162/62454652-5d4dd180-b792-11e9-81d8-933ab72fa603.png)
