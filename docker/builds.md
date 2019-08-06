@@ -20,7 +20,7 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62514435-cee25a00-b83c-11e9-92ae-1ce21723d1d8.png)
 
-* docker expects a `Dockerfile` in current directory to get an intructions how to build a command
+* docker expects a `Dockerfile` in the directory where it is builing to get intructions to build the image
 * Instructions in `Dockerfile` is like a `Key-Value` pair where Keys are kept as UPPERCASE (aka FROM, RUN, COPY)
 * Below picture gives a detail about this
 
