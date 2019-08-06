@@ -1,6 +1,6 @@
 ## Docker Volumes Deep Dive
 
-* `docker volume ls` command will show all voumes
+* `docker volume ls` command will show all volumes
 * Lets create one
 
 ![image](https://user-images.githubusercontent.com/13016162/62516040-94c78700-b841-11e9-885a-f84246794849.png)
