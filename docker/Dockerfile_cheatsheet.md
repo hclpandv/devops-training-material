@@ -5,7 +5,8 @@ Usage:
 * `FROM <image>`
 * `FROM <image>:<tag>`
 * `FROM <image>@<digest>`
-Information:
+
+#### Information:
 
 * FROM must be the first non-comment instruction in the Dockerfile.
 * FROM can appear multiple times within a single Dockerfile in order to create multiple images. Simply make a note of the last image ID output by the commit before each new FROM command.
