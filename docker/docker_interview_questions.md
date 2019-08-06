@@ -81,10 +81,3 @@ HOME=/root
 
 ![image](https://user-images.githubusercontent.com/13016162/62266934-efc73b80-b447-11e9-9435-7b08b5dc1e03.png)
 
-# Docker network (dig it more)
-
-![image](https://user-images.githubusercontent.com/13016162/62267533-fc4c9380-b449-11e9-842d-907ab5259ba7.png)
-
-# Docker volume (dig it more)
-
-![image](https://user-images.githubusercontent.com/13016162/62267566-21d99d00-b44a-11e9-91d8-275854d4b6bd.png)
