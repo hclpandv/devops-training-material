@@ -1,7 +1,7 @@
 ## Docker Volumes Deep Dive
 
 
-> By design, Docker containers do not store persistent data. Any data written to a container's writable layer will no longer be available once the container stops running. Also, getting data written to a container back out of it for another process can be difficult. To solve the issue of persisting data from a container
+> By design, Docker containers do not store persistent data. Any data written to a container's writable layer will no longer be available once the container stops running. Also, getting data written to a container back out of it for another process can be difficult. To solve the issue of persisting data from a container docker uses volumes
 
 * `docker volume ls` command will show all volumes
 * Lets create one
