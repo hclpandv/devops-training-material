@@ -64,61 +64,62 @@ Normal shell processing does not occur when using the exec form. For example, `C
 
 ## EXPOSE
 
-Usage:
+#### Usage:
 
-EXPOSE <port> [<port> ...]
-Information:
+* `EXPOSE <port> [<port> ...]`
 
-Informs Docker that the container listens on the specified network port(s) at runtime.
-EXPOSE does not make the ports of the container accessible to the host.
-Reference - Best Practices
+#### Information:
+
+* Informs Docker that the container listens on the specified network port(s) at runtime.
+* EXPOSE does not make the ports of the container accessible to the host.
 
 ## ENV
 
-Usage:
+#### Usage:
 
-ENV <key> <value>
-ENV <key>=<value> [<key>=<value> ...]
-Information:
+* `ENV <key> <value>`
+* `ENV <key>=<value> [<key>=<value> ...]`
 
-The ENV instruction sets the environment variable <key> to the value <value>.
-The value will be in the environment of all “descendant” Dockerfile commands and can be replaced inline as well.
-The environment variables set using ENV will persist when a container is run from the resulting image.
-The first form will set a single variable to a value with the entire string after the first space being treated as the <value> - including characters such as spaces and quotes.
+#### Information:
+
+* The ENV instruction sets the environment variable <key> to the value <value>.
+* The value will be in the environment of all “descendant” Dockerfile commands and can be replaced inline as well.
+* The environment variables set using ENV will persist when a container is run from the resulting image.
+* The first form will set a single variable to a value with the entire string after the first space being treated as the <value> - including characters such as spaces and quotes.
 
 ## ADD
 
-Usage:
+#### Usage:
 
-ADD <src> [<src> ...] <dest>
-ADD ["<src>", ... "<dest>"] (this form is required for paths containing whitespace)
-Information:
+* `ADD <src> [<src> ...] <dest>`
+* `ADD ["<src>", ... "<dest>"]` (this form is required for paths containing whitespace)
 
-Copies new files, directories, or remote file URLs from <src> and adds them to the filesystem of the image at the path <dest>.
-<src> may contain wildcards and matching will be done using Go’s filepath.Match rules.
-If <src> is a file or directory, then they must be relative to the source directory that is being built (the context of the build).
-<dest> is an absolute path, or a path relative to WORKDIR.
-If <dest> doesn’t exist, it is created along with all missing directories in its path.
-Reference - Best Practices
+#### Information:
+
+* Copies new files, directories, or remote file URLs from <src> and adds them to the filesystem of the image at the path <dest>.
+* `<src>` may contain wildcards and matching will be done using Go’s filepath.Match rules.
+* If <src> is a file or directory, then they must be relative to the source directory that is being built (the context of the build).
+* `<dest>` is an absolute path, or a path relative to WORKDIR.
+* If <dest> doesn’t exist, it is created along with all missing directories in its path.
 
 ## COPY
 
-Usage:
+#### Usage:
 
-COPY <src> [<src> ...] <dest>
-COPY ["<src>", ... "<dest>"] (this form is required for paths containing whitespace)
-Information:
+* `COPY <src> [<src> ...] <dest>`
+* `COPY ["<src>", ... "<dest>"]`(this form is required for paths containing whitespace)
 
-Copies new files or directories from <src> and adds them to the filesystem of the image at the path <dest>.
-<src> may contain wildcards and matching will be done using Go’s filepath.Match rules.
-<src> must be relative to the source directory that is being built (the context of the build).
-<dest> is an absolute path, or a path relative to WORKDIR.
-If <dest> doesn’t exist, it is created along with all missing directories in its path.
-Reference - Best Practices
+#### Information:
+
+* Copies new files or directories from <src> and adds them to the filesystem of the image at the path <dest>.
+* <src> may contain wildcards and matching will be done using Go’s filepath.Match rules.
+* <src> must be relative to the source directory that is being built (the context of the build).
+* <dest> is an absolute path, or a path relative to WORKDIR.
+* If <dest> doesn’t exist, it is created along with all missing directories in its path.
 
 ## ENTRYPOINT
 
-Usage:
+#### Usage:
 
 * `ENTRYPOINT ["<executable>", "<param1>", "<param2>"]` (exec form, preferred)
 * `ENTRYPOINT <command> <param1> <param2>` (shell form)
