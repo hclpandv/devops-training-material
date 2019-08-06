@@ -10,7 +10,11 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62513871-0ea84200-b83b-11e9-9f34-991128f6aefe.png)
 
-![image](https://user-images.githubusercontent.com/13016162/62513924-30092e00-b83b-11e9-807a-ed9fb9b699c7.png)
+* Now you can use `docker run` to run a container from newly built image
+* `--rm` in docker run command removes a container the moment it is exited.
+* `-it` mode makes it interactive, you could also see the output of nginx web requests here.
+
+![image](https://user-images.githubusercontent.com/13016162/62513971-5202b080-b83b-11e9-86de-854666d626bb.png)
 
 * docker expects a `Dockerfile` in current directory to get an intructions how to build a command
 * Instructions in `Dockerfile` is like a `Key-Value` pair where Keys are kept as UPPERCASE (aka FROM, RUN, COPY)
