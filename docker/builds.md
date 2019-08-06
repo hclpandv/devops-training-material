@@ -16,6 +16,10 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62513971-5202b080-b83b-11e9-86de-854666d626bb.png)
 
+* You can also build an image from a git repo
+
+![image](https://user-images.githubusercontent.com/13016162/62514435-cee25a00-b83c-11e9-92ae-1ce21723d1d8.png)
+
 * docker expects a `Dockerfile` in current directory to get an intructions how to build a command
 * Instructions in `Dockerfile` is like a `Key-Value` pair where Keys are kept as UPPERCASE (aka FROM, RUN, COPY)
 * Below picture gives a detail about this
