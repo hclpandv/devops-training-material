@@ -17,8 +17,9 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62516626-33a0b300-b843-11e9-85a0-92ff77d3e183.png)
 
-* Now lets look into the volume
+* Now lets look into the volume. the Host machines directory is actually mounted into the container
 
 ![image](https://user-images.githubusercontent.com/13016162/62516781-942ff000-b843-11e9-8537-1fc6c2670a6e.png)
 
 * This volume is persitent. even if you delete the container the volume with data will persist
+* If you try to delete a volume which is being used by a container it will not be deleted thats a safety latch.
