@@ -1,7 +1,7 @@
 # devops-my-study
 
-#### [Docker](/docker)
+#### [Docker](docker/index.md)
 
-#### [Ansible](ansible.md)
+#### [Ansible](ansible/ansible.md)
 
-#### [Kubernetes](k8s.md)
+#### [Kubernetes](kubernetes/k8s.md)
