@@ -16,7 +16,7 @@
 
 ![image](https://user-images.githubusercontent.com/13016162/62516110-c2143500-b841-11e9-86f0-15b649b7edd0.png)
 
-* Lets attach this volume to a new container
+* Lets attach this volume to a new container. (`-v vikivol:/vol` and `--mount source=<vol_name>,target=<cont_mnt_dir>` are same however mount is preferred)
 
 ![image](https://user-images.githubusercontent.com/13016162/62516626-33a0b300-b843-11e9-85a0-92ff77d3e183.png)
 
