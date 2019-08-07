@@ -1,3 +1,3 @@
 * [Docker](docker/index.md)  
-* [Ansible](ansible/ansible.md)  
-* [Kubernetes](kubernetes/k8s.md)  
+* [Ansible](ansible/index.md)  
+* [Kubernetes](kubernetes/index.md)  
