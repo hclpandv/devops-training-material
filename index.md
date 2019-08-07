@@ -6,4 +6,4 @@
 
 
 ---
-[Source of GitHub](https://hclpandv.github.io/devops-training-material/)
+[Source of GitHub](https://github.com/hclpandv/devops-training-material)
