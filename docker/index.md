@@ -1,5 +1,3 @@
-## Docker Study Material
-
 [Docker Images](images.md)  
 [Docker Containers](containers.md)  
 [Docker Build](builds.md)  
