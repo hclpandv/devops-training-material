@@ -1,1 +1,1 @@
-[architecture](archetecture.md)
+[architecture](architecture.md)
