@@ -6,7 +6,7 @@
 * you can install ansible to any machine which has remote access to actual target servers. 
 * the machine where you install ansible is refered as ansible control machine.
 * ansible can only be installed on Linux machines but it can manage remote windows hosts/servers too. (at the time of writing this articles)
-* since winodows OS coming with WSL (Windows subsystem linux) one can install linux subsystem and install ansible on that.
+* since winodows OS coming with WSL (Windows subsystem linux) one can install ansible on linux subsystem.(ubuntu for example)
 
 #### Linux | via ppa (ubuntu)
 
