@@ -2,10 +2,10 @@
 
 ## How to Setup ansible ?
 
-* ansible can be used to configure remote servers through remotely accessing them over ssh or winrm.
+* ansible can be used to configure remote servers through remotely accessing them over ssh or winrm(in case of Windows).
 * you can install ansible to any machine which has remote access to actual target servers. 
 * the machine where you install ansible is refered as ansible control machine.
-* ansible can only be installed on Linux machines but it can manage windows hosts/servers too. (at the time of writing this articles)
+* ansible can only be installed on Linux machines but it can manage remote windows hosts/servers too. (at the time of writing this articles)
 * since winodows OS coming with WSL (Windows subsystem linux) one can install linux subsystem and install ansible on that.
 
 #### Linux | via ppa (ubuntu)
