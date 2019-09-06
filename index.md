@@ -8,6 +8,7 @@ permalink: /
 
 * [Docker](docker/index.md)  
 * [Ansible](ansible/index.md)  
+* [Vagrant](vagrant/index.md)  
 * [Kubernetes](kubernetes/index.md)  
 
 
