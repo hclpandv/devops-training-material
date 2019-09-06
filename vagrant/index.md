@@ -1,1 +1,1 @@
-Basic CLI(basic-cli.md)  
+[Basic CLI](basic-cli.md)  
