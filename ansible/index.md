@@ -1,4 +1,4 @@
-[Basic Commands](basic-cli.md) 
+[Basic Commands](basic-cli.md)  
 [Ansible Setup](setup.md)  
 [Ansible inventory](inventory.md)  
 
