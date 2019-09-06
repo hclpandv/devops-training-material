@@ -1,2 +1,2 @@
-[<<Back](index.md)
+[<<Back](index.md)  
 inventory details
