@@ -2,7 +2,7 @@
 
 ## How to Setup ansible ?
 
-* ansible can be used to configure remote servers through remotely accessing thrm over ssh or winrm.
+* ansible can be used to configure remote servers through remotely accessing them over ssh or winrm.
 * you can install ansible to any machine which has remote access to actual target servers. 
 * the machine where you install ansible is refered as ansible control machine.
 * ansible can only be installed on Linux machines but it can manage windows hosts/servers too. (at the time of writing this articles)
@@ -29,7 +29,7 @@ apt-get install -y ansible
 export DEBIAN_FRONTEND=noninteractive
 apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
 apt-get install -y software-properties-common
-apt-get install -y python3-pip ssh
+apt-get install -y python3-pip
 pip3 install ansible
 ```
 
