@@ -1,6 +1,6 @@
 [<<Back](index.md)
 
-Ansible is an agentless configuration management tool that uses YAML templates to define a list of tasks to be performed on hosts. In Ansible, roles are a collection of variables, tasks, files, templates and modules that are used together to perform a singular, complex function.
+Ansible is an agentless configuration management tool that uses YAML templates to define a list of tasks to be performed on hosts.
 
 ## How to Setup ansible ?
 
