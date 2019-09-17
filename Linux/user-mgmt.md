@@ -20,7 +20,7 @@ Is the information correct? [Y/n] y
 
 ```
 
-## Provide sudo sudo privilege
+## Provide sudo privilege to new user
 ```bash
 usermod -aG sudo vpandey
 ```
