@@ -1,6 +1,10 @@
 ## Add a User
 ```bash
-$ sudo adduser vpandey
+sudo adduser vpandey
+```
+```
+# Output
+
 Adding user `vpandey' ...  
 Adding new group `vpandey' (1001) ... 
 Adding new user `vpandey' (1001) with group `lubos' ...
