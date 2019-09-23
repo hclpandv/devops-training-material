@@ -15,3 +15,11 @@ search_enabled: true
 aux_links:
     "Source on GitHub":
       - "//github.com/hclpandv/devops-training-material"
+
+
+markdown: kramdown
+kramdown:
+    highlighter: rouge
+    syntax_highlighter_opts:
+        block:
+            line_numbers: true
