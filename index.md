@@ -20,6 +20,7 @@ permalink: /
 
 ---
 [Linux commands cheatsheet](Linux/index.md)  
+[Windows commands cheatsheet](Linux/index.md)   
 [Source of GitHub](https://github.com/hclpandv/devops-training-material)
 
 
