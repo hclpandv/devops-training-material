@@ -30,5 +30,10 @@ $IP = "10.10.10.10"
 # Add the cloud instance ip to your trusted host
 Set-Item WSMan:\localhost\Client\TrustedHosts -Value $IP
 # connect
+Enter-PSSession -ComputerName $IP -Credential Get-Credential -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocatio
+nCheck) -UseSSL
+
+# OR
+
 Enter-PSSession -ConnectionUri https://"$IP":5986 -Credential (Get-Credential) -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck) -Authentication Negotiate
 ```
