@@ -2,7 +2,7 @@
 
 ####  Steps to be performed on Portal or via cloud mgmt PS module (Azure/AWS)
 
-* Open WinRM Ports on security group (Below example on azure portal)
+* Open WinRM Port on your security group configuration (Below example on azure portal)
 
 ![image](https://user-images.githubusercontent.com/13016162/65591674-862c5f00-dfaa-11e9-8bda-0b2eb22876b1.png)
 
