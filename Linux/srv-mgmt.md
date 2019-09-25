@@ -9,3 +9,11 @@
 - = Stopped
 ? = Service does not have status parameter
 ```
+
+#### Service Status, Start, Stop, Restart
+
+```bash
+sudo systemctl apache2 restart
+sudo systemctl apache2 status
+sudo /etc/init.d/my_service restart
+```
