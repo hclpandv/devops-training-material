@@ -26,6 +26,8 @@ New-NetFirewallRule -DisplayName 'WinRM HTTPS-In' -Name 'WinRM HTTPS-In' -Profil
 #### Steps to be performed on Local machine (Typically Your laptop)
 
 ```powershell
+# Config winrm
+winrm quickconfig
 $IP = "10.10.10.10"
 # Add the cloud instance ip to your trusted host
 Set-Item WSMan:\localhost\Client\TrustedHosts -Value $IP
