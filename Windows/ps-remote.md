@@ -29,12 +29,21 @@ New-NetFirewallRule -DisplayName 'WinRM HTTPS-In' -Name 'WinRM HTTPS-In' -Profil
 # Config winrm
 winrm quickconfig
 $IP = "10.10.10.10"
+$azure_vm_cred = Get-Credential -UserName "$IP\vikiscripts" -Message "Password Pls"
 # Add the cloud instance ip to your trusted host
 Set-Item WSMan:\localhost\Client\TrustedHosts -Value $IP
 # connect
-Enter-PSSession -ComputerName $IP -Credential Get-Credential -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck) -UseSSL
+Enter-PSSession -ComputerName $IP -Credential $azure_vm_cred -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck) -UseSSL
 
 # OR
 
-Enter-PSSession -ConnectionUri https://"$IP":5986 -Credential (Get-Credential) -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck) -Authentication Negotiate
+Enter-PSSession -ConnectionUri https://"$IP":5986 -Credential $azure_vm_cred -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck) -Authentication Negotiate
 ```
+
+![image](https://user-images.githubusercontent.com/13016162/65743343-c78b4e80-e111-11e9-8378-7ab08054df85.png)
+
+![image](https://user-images.githubusercontent.com/13016162/65743399-015c5500-e112-11e9-8ded-20b5f36d7442.png)
+
+
+
+
