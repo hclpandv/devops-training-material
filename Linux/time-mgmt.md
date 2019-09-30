@@ -1,3 +1,4 @@
+[<<Back](index.md)
 # Time Sync 
 
 * Ubuntu 18.04
