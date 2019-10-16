@@ -38,26 +38,25 @@ get local branches including current branch
 
 #### Work on your content
 
-`git status`  
-```
-On branch my_new_branch_name
-nothing to commit, working tree clean
-```
-
-Created a new file 1.txt and then `git status`  
-
-```
-On branch my_new_branch_name
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-
-        1.txt
-```
-
 ```bash
 # Get git status to observe
-# Add new files to stage to track changes
+git status
 
+# Add new files to stage to track changes
+git add name_of_file
+# or all files including sub dirs
+git add .
+
+# Commit the changes
+git commit -m "my commit message"
+
+# Push the changes to remote origin
+git push origin my_branch
+# or simply
+git push
+
+# Pull the changes from remote origin typically changes by others
+git pull origin my_branch
 ```
 
 
