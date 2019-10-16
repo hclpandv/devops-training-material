@@ -20,9 +20,21 @@ Verify if remote is added
 #### Workflow
 
 ```bash
-# Initialize a git repo on current dir
+# Clone an existing hosted repository
+git clone https://github.com/hclpandv/devops-training-material.git
+
+# Clone a specific branch to a specified directory path
+git clone --single-branch --branch my_target_branch https://github.com/hclpandv/devops-training-material.git my_target_dir_path
+
+# Initialize a git repository on current dir
 git init
 # Or to a new dir to be created and initialized
 git init repo_dir_name
+
+# Check the current branch (by default `master` branch is created when you initialize a repository)
+git branch
+
+# Fetch all the remote branches
+git fetch --all
 
 ```
