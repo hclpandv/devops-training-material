@@ -1,1 +1,30 @@
-Cmd
+Getting started
+
+```bash
+# What version you installed
+git --version
+
+# Git configurations
+git config --list
+
+# Configure the git to add User and remote origin git server
+git config user.name "Vikas Pandey"
+git config user.email "vikiscripts@gmail.com"
+git remote add origin https://github.com/hclpandv/devops-training-material.git
+```
+
+Verify if remote is added   
+
+![image](https://user-images.githubusercontent.com/13016162/66889515-68c64000-f000-11e9-8b13-97affdda0c4f.png)
+
+
+
+Workflow
+
+```bash
+# Initialize a git repo on current dir
+git init
+# Or to a new dir to be created and initialized
+git init repo_dir_name
+
+```
