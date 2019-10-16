@@ -45,23 +45,25 @@ git clone https://github.com/hclpandv/devops-training-material.git
 # Clone a specific branch to a specified directory path
 git clone --single-branch --branch my_target_branch https://github.com/hclpandv/devops-training-material.git my_target_dir_path
 
-
-
 # Get all the branches including the ones on remote origin 
 git branch --all
 
-
-
-
 # Fetch all the remote branches
 git fetch --all
+```
+#### Git logs
 
+```bash
 # Get logs of all commits within repository
 git log
 
 # Create an Alias for nicely decorated graphed Log
 alias git-graph="git log --all --decorate --oneline --graph"
+```
 
+#### File permission with git
+
+```bash
 # check the existing permissions by the file using the following command, permissions like 100644
 git ls-files --stage 
 # Modify as below
