@@ -31,8 +31,16 @@ git init
 # Or to a new dir to be created and initialized
 git init repo_dir_name
 
-# Check the current branch (by default `master` branch is created when you initialize a repository)
+# Check the current branch (by default 'master' branch is created when you initialize a repository)
 git branch
+# Get all the branches including the ones on remote origin 
+git branch --all
+
+# Create & switch to the new branch
+git checkout -b my_new_branch_name
+
+# Up-stream newly created branch to remote origin
+git push --set-upstream origin my_new_branch_name
 
 # Fetch all the remote branches
 git fetch --all
