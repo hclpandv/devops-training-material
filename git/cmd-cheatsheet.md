@@ -36,6 +36,30 @@ git push --set-upstream origin my_new_branch_name
 get local branches including current branch  
 ![image](https://user-images.githubusercontent.com/13016162/66890642-682fa880-f004-11e9-833f-314311408ec9.png)
 
+#### Work on your content
+
+`git status`  
+```
+On branch my_new_branch_name
+nothing to commit, working tree clean
+```
+
+Created a new file 1.txt and then `git status`  
+
+```
+On branch my_new_branch_name
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        1.txt
+```
+
+```bash
+# Get git status to observe
+# Add new files to stage to track changes
+
+```
+
 
 #### Hosted Remote Repositories 
 
