@@ -6,6 +6,7 @@ description: "Home Page"
 permalink: /
 ---
 
+* [Git](git/index.md)
 * [Docker](docker/index.md)  
 * [Ansible](ansible/index.md)  
 * [Vagrant](vagrant/index.md)  
