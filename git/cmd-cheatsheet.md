@@ -1,4 +1,4 @@
-Getting started
+#### Getting started
 
 ```bash
 # What version you installed
@@ -17,9 +17,7 @@ Verify if remote is added
 
 ![image](https://user-images.githubusercontent.com/13016162/66889515-68c64000-f000-11e9-8b13-97affdda0c4f.png)
 
-
-
-Workflow
+#### Workflow
 
 ```bash
 # Initialize a git repo on current dir
