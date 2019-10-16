@@ -17,7 +17,26 @@ Verify if remote is added
 
 ![image](https://user-images.githubusercontent.com/13016162/66889515-68c64000-f000-11e9-8b13-97affdda0c4f.png)
 
-#### Workflow
+#### Create and manage local git repository
+
+```bash
+# Initialize a git repository on current dir
+git init
+# Or to a new dir to be created and initialized
+git init repo_dir_name
+
+# Create & switch to the new branch (by default 'master' branch is created when you initialize a repository)
+# Use checkout to switch among local branches
+git checkout -b my_new_branch_name
+
+# Up-stream newly created branch to remote origin
+git push --set-upstream origin my_new_branch_name
+```
+get local branches including current branch  
+![image](https://user-images.githubusercontent.com/13016162/66890642-682fa880-f004-11e9-833f-314311408ec9.png)
+
+
+#### Hosted Remote Repositories 
 
 ```bash
 # Clone an existing hosted repository
@@ -26,23 +45,25 @@ git clone https://github.com/hclpandv/devops-training-material.git
 # Clone a specific branch to a specified directory path
 git clone --single-branch --branch my_target_branch https://github.com/hclpandv/devops-training-material.git my_target_dir_path
 
-# Initialize a git repository on current dir
-git init
-# Or to a new dir to be created and initialized
-git init repo_dir_name
 
-# Check the current branch (by default 'master' branch is created when you initialize a repository)
-git branch
+
 # Get all the branches including the ones on remote origin 
 git branch --all
 
-# Create & switch to the new branch
-git checkout -b my_new_branch_name
 
-# Up-stream newly created branch to remote origin
-git push --set-upstream origin my_new_branch_name
+
 
 # Fetch all the remote branches
 git fetch --all
 
+# Get logs of all commits within repository
+git log
+
+# Create an Alias for nicely decorated graphed Log
+alias git-graph="git log --all --decorate --oneline --graph"
+
+# check the existing permissions by the file using the following command, permissions like 100644
+git ls-files --stage 
+# Modify as below
+git update-index --chmod=+x 'name-of-shell-script'
 ```
