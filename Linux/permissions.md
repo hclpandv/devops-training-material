@@ -1,10 +1,5 @@
 [<<Back](index.md)
 
-#### Understanding Permissions
-
-![image](https://user-images.githubusercontent.com/13016162/66981974-e22e6300-f0d2-11e9-9eb4-2cb4210db61a.png)  
-![image](https://user-images.githubusercontent.com/13016162/66982042-fb371400-f0d2-11e9-9959-bd1b09b4329f.png)  
-
 #### Permissions on files and dirs
 
 ```bash
@@ -27,5 +22,10 @@ chown user_name:grp_name my_file_or_dir_name
 # Only grp change
 chown :grp_name my_file_or_dir_name
 ```
+
+#### Understanding Permissions
+
+![image](https://user-images.githubusercontent.com/13016162/66981974-e22e6300-f0d2-11e9-9eb4-2cb4210db61a.png)  
+![image](https://user-images.githubusercontent.com/13016162/66982042-fb371400-f0d2-11e9-9959-bd1b09b4329f.png)  
 
 
