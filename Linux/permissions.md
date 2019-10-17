@@ -1,5 +1,5 @@
 [<<Back](index.md)
-## Permissions on files and dirs
+#### Permissions on files and dirs
 
 ```bash
 # Permissions on a file or dir 
@@ -9,7 +9,11 @@ chmod 755 my_file_or_dir_name
 chmod +x my_file_or_dir_name
 # Add write perm only for current user
 chmod u+w my_file_or_dir_name
+```
 
+#### Ownership
+
+```bash
 # Change ownership
 chown root_or_user my_file_or_dir_name
 # Ownership with both user and group
