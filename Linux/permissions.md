@@ -8,7 +8,7 @@ chmod 755 my_file_or_dir_name
 
 # Change ownership
 chown root_or_user my_file_or_dir_name
-# Ownership with bothe user and group
+# Ownership with both user and group
 chown user_name:grp_name my_file_or_dir_name
 # Only grp change
 chown :grp_name my_file_or_dir_name
