@@ -1,6 +1,7 @@
 ## Linux Command Cheat Sheet
 
 - [User Management](user-mgmt.md)  
+- [File Permissions](permissions.md)
 - [SSH Acces Management](ssh-mgmt.md)  
 - [Time management](time-mgmt.md)  
 - [service management](srv-mgmt.md)  
