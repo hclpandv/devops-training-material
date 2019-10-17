@@ -28,7 +28,8 @@ chown :grp_name my_file_or_dir_name
 ![image](https://user-images.githubusercontent.com/13016162/66981974-e22e6300-f0d2-11e9-9eb4-2cb4210db61a.png)  
 ![image](https://user-images.githubusercontent.com/13016162/66982042-fb371400-f0d2-11e9-9959-bd1b09b4329f.png)  
 
-![image](https://user-images.githubusercontent.com/13016162/66982869-c0ce7680-f0d4-11e9-8b1a-19198744bc10.png)
+![image](https://user-images.githubusercontent.com/13016162/66982977-0db24d00-f0d5-11e9-9b38-4bb98f86ac3d.png)
+
 
 
 
