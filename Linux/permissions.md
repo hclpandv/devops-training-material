@@ -3,7 +3,7 @@
 
 ```bash
 # Permissions on a file or dir 
-# In Linux file and dir are comsidered as similar objects, dir is a file with pointers of its child objs
+# In Linux file and dir are considered as similar objects, dir is a file with pointers of its child objs
 chmod 755 my_file_or_dir_name
 # Adding execute permissions (in addition to what perm already exists)
 chmod +x my_file_or_dir_name
