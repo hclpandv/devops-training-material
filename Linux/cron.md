@@ -79,16 +79,16 @@ The most useful of these is probably **@reboot** which allows you to run a comma
 @reboot freevo webserver start
 @reboot freevo recordserver start
 ```
-Entry	      |     Description	              |    Equivalent To |
-------------|-------------------------------|------------------|
-@reboot	    |     Run once, at startup.	    |    None          |
-@yearly	    |     Run once a year	          |    0 0 1 1 *     |
-@annually   |	  (same as @yearly)	          |    0 0 1 1 *     |
-@monthly    |	  Run once a month	           |    0 0 1 * *     |
-@weekly	    |     Run once a week	          |    0 0 * * 0     |
-@daily	     |     Run once a day	           |    0 0 * * *     |
-@midnight   |	  (same as @daily)	           |    0 0 * * *     |
-@hourly     |     Run once an hour	         |    0 * * * *     |
+| Entry	        |     Description	            |    Equivalent To |
+|---------------|-----------------------------|------------------|
+| `@reboot`	    |     Run once, at startup.	  |    None          |
+| `@yearly`	    |     Run once a year	        |    0 0 1 1 *     |
+| `@annually`   |	  (same as @yearly)	        |    0 0 1 1 *     |
+| `@monthly`    |	  Run once a month	         |    0 0 1 * *     |
+| `@weekly`	    |     Run once a week	        |    0 0 * * 0     |
+| `@daily`	     |     Run once a day	         |    0 0 * * *     |
+| `@midnight`   |	  (same as @daily)	         |    0 0 * * *     |
+| `@hourly`     |     Run once an hour	       |    0 * * * *     |
 
 ### Miscelleanous Issues
 
