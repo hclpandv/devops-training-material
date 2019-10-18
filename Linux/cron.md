@@ -30,7 +30,7 @@ The following is the format entries in a crontab must be. Note all lines startin
 
 Here are a few examples, to see what some entries look like.
 
-```
+```bash
 # Run command at 7:00am each weekday [mon-fri]
 00 07 * * 1-5  mail_pager.script 'Wake Up'
 
@@ -57,6 +57,14 @@ You can use **dashes** to specify ranges. For example: `mon-fri`, or `9-17`
 
 You can use **forward slash** to specify a repeating range. For example: `*/5` for every five minutes, hours, days
 
+### TWEAK : Running a job in fraction on a minute
+
+```bash
+# Running a job in every 30 seconds
+*/25 * * * * the_task
+*/25 * * * * sleep 30 ; the_task
+```
+
 ### Special Entries
 
 There are several special entries, some which are just shortcuts, that you can use instead of specifying the full cron entry.
@@ -71,135 +79,6 @@ The most useful of these is probably **@reboot** which allows you to run a comma
 @reboot freevo recordserver start
 ```
 
-The complete list:
-
-<table cellpadding="4" cellspacing="1" style="margin-left:25px;">
-<tr bgcolor="#EEEEEE">
-<th>
-Entry
-</th>
-
-<th>
-Description
-</th>
-
-<th>
-Equivalent To
-</th>
-</tr>
-
-<tr>
-<td>
-@reboot
-</td>
-
-<td>
-Run once, at startup.
-</td>
-
-<td>
-None
-</td>
-</tr>
-
-<tr>
-<td>
-@yearly
-</td>
-
-<td>
-Run once a year
-</td>
-
-<td>
-0 0 1 1 *
-</td>
-</tr>
-
-<tr>
-<td>
-@annually
-</td>
-
-<td>
-(same as @yearly)
-</td>
-
-<td>
-0 0 1 1 *
-</td>
-</tr>
-
-<tr>
-<td>
-@monthly
-</td>
-
-<td>
-Run once a month
-</td>
-
-<td>
-0 0 1 * *
-</td>
-</tr>
-
-<tr>
-<td>
-@weekly
-</td>
-
-<td>
-Run once a week
-</td>
-
-<td>
-0 0 * * 0
-</td>
-</tr>
-
-<tr>
-<td>
-@daily
-</td>
-
-<td>
-Run once a day
-</td>
-
-<td>
-0 0 * * *
-</td>
-</tr>
-
-<tr>
-<td>
-@midnight
-</td>
-
-<td>
-(same as @daily)
-</td>
-
-<td>
-0 0 * * *
-</td>
-</tr>
-
-<tr>
-<td>
-@hourly
-</td>
-
-<td>
-Run once an hour
-</td>
-
-<td>
-0 * * * *
-</td>
-</tr>
-</table>
 
 ### Miscelleanous Issues
 
