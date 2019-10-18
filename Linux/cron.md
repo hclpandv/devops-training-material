@@ -12,10 +12,10 @@ If neither file exists, only the root user can use crontab. The allow/deny files
 
 #### Command
 
-| Command           | Description                                   |
-|-------------------|-----------------------------------------------|
-| export EDITOR=vi  | To Edit the crontab in VI                     |
-| `crontab -e`      | Edit crontab file, or create new              |
-| `crontab -l`      | Display crontab file                          |
-| `crontab -r`      | Remove crontab file                           |
-| `crontab -v`      | Display the last time you edited your crontab |
+| Command             | Description                                   |
+|---------------------|-----------------------------------------------|
+| `export EDITOR=vi`  | To Edit the crontab in VI                     |
+| `crontab -e`        | Edit crontab file, or create new              |
+| `crontab -l`        | Display crontab file                          |
+| `crontab -r`        | Remove crontab file                           |
+| `crontab -v`        | Display the last time you edited your crontab |
