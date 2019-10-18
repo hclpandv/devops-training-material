@@ -82,7 +82,7 @@ The most useful of these is probably **@reboot** which allows you to run a comma
 
 #### Full list
 
-| Entry               | Description           | Eqivalaent To  |
+| Entry               | Description           | Eqivalent To  |
 |---------------------|-----------------------|----------------|
 | `@reboot`           | Run once, at startup. | None           |
 | `@yearly`           | Run once a year       | 0 0 1 1 *      |
