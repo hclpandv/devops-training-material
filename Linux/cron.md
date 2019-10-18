@@ -79,6 +79,9 @@ The most useful of these is probably **@reboot** which allows you to run a comma
 @reboot freevo webserver start
 @reboot freevo recordserver start
 ```
+
+#### Full list
+
 | Entry               | Description           | Eqivalaent To  |
 |---------------------|-----------------------|----------------|
 | `@reboot`           | Run once, at startup. | None           |
