@@ -16,4 +16,9 @@ cat /var/log/dpkg.log | grep "\ install\ "
 
 * yum 
 
-> The Yellowdog Updater, Modified (YUM) is a free and open-source command-line package-management utility for computers running the Linux operating system using the RPM Package Manager.[2] Though YUM has a command-line interface, several other tools provide graphical user interfaces to YUM functionality.
+> The Yellowdog Updater, Modified (YUM) is a free and open-source command-line package-management utility for computers running the Linux operating system using the RPM Package Manager.
+
+```bash
+# To Install a package
+sudo yum install <pkg_name>
+```
