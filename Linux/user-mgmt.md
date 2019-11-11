@@ -53,9 +53,15 @@ awk -F: '{ print $1}' /etc/group
 ```
 ## Create a New group and add users
 ```bash
-# You could add the user to multiple groups
+# Create group
+sudo groupadd vikiscripts
+
+# You could add the users to this new group
 sudo usermod -a -G vikiscripts vpandey2
 sudo usermod -a -G vikiscripts vpandey
+
+# Verify
+grep vikiscripts /etc/group
 ```
 ![image](https://user-images.githubusercontent.com/13016162/68592978-5eda1480-04ba-11ea-905f-d58c3f4d770e.png)
 
