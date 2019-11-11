@@ -49,5 +49,20 @@ compgen -u
 awk -F: '{ print $1}' /etc/passwd
 # List Groups
 compgen -g
+awk -F: '{ print $1}' /etc/group
 ```
-# Create a New group
+## Create a New group and add users
+```bash
+# You could add the user to multiple groups
+sudo usermod -a -G vikiscripts vpandey2
+sudo usermod -a -G vikiscripts vpandey
+```
+![image](https://user-images.githubusercontent.com/13016162/68592978-5eda1480-04ba-11ea-905f-d58c3f4d770e.png)
+
+## Lets assign permission to a directory
+
+```bash
+chown <user_name>:<grp_name> dir_name
+```
+![image](https://user-images.githubusercontent.com/13016162/68593246-fd667580-04ba-11ea-85fc-44c6042f00f6.png)
+
