@@ -41,3 +41,13 @@ echo vpandey ALL=(ALL) NOPASSWD:ALL >> /etc/sudoers
 # remove write access again
 chmod u-w /etc/sudoers
 ```
+
+## List all users and groups
+```bash
+# List Users
+compgen -u
+awk -F: '{ print $1}' /etc/passwd
+# List Groups
+compgen -g
+```
+# Create a New group
