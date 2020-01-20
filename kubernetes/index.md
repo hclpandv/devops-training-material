@@ -2,4 +2,6 @@
 [microk8s on Ubuntu](microk8s.md)  
 
 [k8s Interview Questions](k8s-interview-questions.md)  
-[Help Docs](help-docs.md)  
+### Cheat Sheets
+[help Docs](help-docs.md)
+[Troubleshooting Cheatsheet](troubleshooting-kubernetes.pdf)
