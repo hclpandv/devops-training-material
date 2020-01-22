@@ -53,7 +53,12 @@ vagrant@vagrant:~$ docker network inspect viki-alpine-net
 * Lets create a custom `vnet-subnet` type docker network
 
 ```
-
+docker network create \
+  --driver=bridge \
+  --subnet=172.28.0.0/16 \
+  --ip-range=172.28.5.0/24 \
+  --gateway=172.28.5.254 \
+  viki-custom-apline-net
 ```
 
 
