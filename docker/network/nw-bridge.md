@@ -50,15 +50,20 @@ vagrant@vagrant:~$ docker network inspect viki-alpine-net
 
 ![image](https://user-images.githubusercontent.com/13016162/72865051-6577da00-3cfc-11ea-82fe-ea97946c9a7d.png)
 
-* Lets create a custom `vnet-subnet` type docker network
+* Lets create a custom `subnet` type docker network
 
-```
+```bash
 docker network create \
   --driver=bridge \
   --subnet=172.28.0.0/16 \
   --ip-range=172.28.5.0/24 \
   --gateway=172.28.5.254 \
   viki-custom-apline-net
+```
+* You can connect any running container to this network
+
+```bash
+docker network connect viki-custom-apline-net alpine2
 ```
 
 
