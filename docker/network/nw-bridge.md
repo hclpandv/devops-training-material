@@ -66,4 +66,13 @@ docker network create \
 docker network connect viki-custom-apline-net alpine2
 ```
 
+* You can also chose to connect the network while creating a container
+```bash
+docker run -dit --name alpine1 --network viki-custom-apline-net alpine ash
+```
+
+* Now attach `alpine1` and try to ping `alpine2` from here, you will sucseed
+
+![image](https://user-images.githubusercontent.com/13016162/72866100-2f3c5980-3d00-11ea-86cd-4a6e1f2aace6.png)
+
 
