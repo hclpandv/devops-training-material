@@ -17,6 +17,9 @@ docker run -dit --name alpine2 alpine ash
 
 * Whenever we create a container it gets attached into this default network `Name: Bridge , Driver: Bridge`
 
-* Lets connect container alpine1 `docker attach alpine1` and do if config
+* Lets connect container alpine1 `docker attach alpine1` and do ifconfig to inspect
+* You will also notice `ping container_name` does not work (You can achive this by creating a new network)
+
+![image](https://user-images.githubusercontent.com/13016162/72863745-c18c2f80-3cf7-11ea-990f-7ce7ff8a6d51.png)
 
 
