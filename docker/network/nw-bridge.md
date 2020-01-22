@@ -8,7 +8,7 @@
 docker network create --driver bridge viki-alpine-net
 ```
 
-* Inspect and observe
+* Inspect and notice that this network’s gateway is 172.20.0.1, as opposed to the default bridge network, whose gateway is 172.17.0.1. 
 * Docker uses the default 172.17.0.0/16 subnet for container networking. If this subnet is not available for docker in your environment (for example because your network already uses this subnet), you must configure Docker to use a different subnet.
 
 ```
