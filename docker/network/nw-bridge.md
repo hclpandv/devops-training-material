@@ -8,7 +8,8 @@
 docker network create --driver bridge viki-alpine-net
 ```
 
-* Inspect
+* Inspect and observe
+* Docker uses the default 172.17.0.0/16 subnet for container networking. If this subnet is not available for docker in your environment (for example because your network already uses this subnet), you must configure Docker to use a different subnet.
 
 ```
 vagrant@vagrant:~$ docker network inspect viki-alpine-net
