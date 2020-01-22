@@ -23,7 +23,17 @@ docker run -dit --name alpine2 alpine ash
 
 ![image](https://user-images.githubusercontent.com/13016162/72863745-c18c2f80-3cf7-11ea-990f-7ce7ff8a6d51.png)
 
+
+* Stop and Remove these containers
+
+```
+docker container stop alpine1 alpine2
+docker container rm alpine1 alpine2
+```
+
 * You could chose to create `Bridge` or `Host` type use defined network
 
 [Bridge](nw-bridge.md)  
 [host](nw-host.md)
+
+
