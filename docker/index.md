@@ -1,4 +1,4 @@
-[DevOps Training](../index.md) -> [Docker](.)
+[DevOps Training](../index.md) >> [Docker](.)
 
 ### Docker network supported by Bridge network
 
