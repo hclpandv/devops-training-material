@@ -1,4 +1,4 @@
-[DevOps Training](../../index.md) -> [Docker](../index.md) -> [Docker Network](.)
+[DevOps Training](../../index.md) >> [Docker](../index.md) >> [Docker Network](.)
 ## Docker networks deep dive
 
 
