@@ -17,11 +17,14 @@ $envOS.version
 
 ```bash
 #!/usr/bin/env bash
+HOSTNAME=$(hostname -s)
+FQDN=$(hostname -f)
 ```
 
 ```powershell
 # PowerShell
-
+$Hostname = $env:COMPUTERNAME
+$fqdn = ([System.Net.Dns]::GetHostByName(($env:computerName))).hostname
 ```
 
 
@@ -37,7 +40,7 @@ IPADDR=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1
 $IPADDR = (Get-NetIPAddress | ?{ $_.AddressFamily -eq "IPv4" -and !($_.IPAddress -match "169") -and !($_.IPaddress -match "127") } | Select-Object -First 1).IPAddress
 ```
 
-#### Is the session run by admin?
+#### Is the session run by admin/sudo?
 
 ```bash
 #!/usr/bin/env bash
