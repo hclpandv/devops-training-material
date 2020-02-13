@@ -21,7 +21,8 @@ permalink: /
 
 ---
 [Linux commands cheatsheet](Linux/index.md)  
-[Windows commands cheatsheet](Windows/index.md)   
+[Windows commands cheatsheet](Windows/index.md)  
+[cross-platform scripts cheatsheet](cross-platform-scripts.md)  
 [Source of GitHub](https://github.com/hclpandv/devops-training-material)
 
 
