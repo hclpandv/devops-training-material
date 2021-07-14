@@ -12,10 +12,11 @@ permalink: /
 * [Vagrant](vagrant/index.md)  
 * [Kubernetes](kubernetes/index.md)  
 
-
-
-
-
+---
+#### Quick PDF reads
+* [Docker Intro](pdf-materials/Docker-intro.pdf)
+* [K8s simple notes](pdf-materials/k8s-simple-notes.pdf)  
+* [kubectl CheatSheet](pdf-materials/the-defenitive-cheat-sheet-of-kubectl.pdf)  
 
 
 
