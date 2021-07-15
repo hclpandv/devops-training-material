@@ -17,6 +17,7 @@ permalink: /
 * [Docker Intro](pdf-materials/Docker-intro.pdf)
 * [K8s simple notes](pdf-materials/k8s-simple-notes.pdf)  
 * [kubectl CheatSheet](pdf-materials/the-defenitive-cheat-sheet-of-kubectl.pdf)  
+* [kubectl CheatSheet](pdf-materials/devops-notes.pdf)  
 
 
 
