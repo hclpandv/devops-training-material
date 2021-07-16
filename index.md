@@ -14,6 +14,7 @@ permalink: /
 
 ---
 #### Quick PDF reads
+* [git Intro](pdf-materials/git-intro.pdf)
 * [Docker Intro](pdf-materials/Docker-intro.pdf)
 * [K8s simple notes](pdf-materials/k8s-simple-notes.pdf)  
 * [kubectl CheatSheet](pdf-materials/the-defenitive-cheat-sheet-of-kubectl.pdf)  
