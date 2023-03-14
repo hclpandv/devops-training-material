@@ -8,7 +8,8 @@ permalink: /
 
 * [Git](git/index.md)
 * [Docker](docker/index.md)  
-* [Ansible](ansible/index.md)  
+* [Ansible](ansible/index.md) 
+* [Terraform](terraform/index.md)   
 * [Vagrant](vagrant/index.md)  
 * [Kubernetes](kubernetes/index.md)  
 
