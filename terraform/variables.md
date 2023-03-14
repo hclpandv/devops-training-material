@@ -35,5 +35,69 @@ List literals can be split into multiple lines for readability, but always requi
 }
 ```
 Key/value pairs can be separated by either a comma or a line break.
+
+#### Variables demo
+  
+```
+variable "msg" {
+  type = string
+  description = "Message to Display for testing"
+  default     = "Hello World!!"
+}
+
+variable "number_of_days" {
+  type = number
+  default = 28
+}
+
+variable "does_exist" {
+  type = bool
+  default = true
+}
+
+variable "list_vm_skus" {
+  type = list(string) // type of the variable, set as a list that accepts only string data
+  default = [
+              "standard_d2s", "standard_d2as", "standard_A2s"
+  ]
+}
+
+variable "azure_vm" {
+  type = object({
+    sku            = string
+    memory_in_gb   = number
+    number_of_core = number
+  })
+  default = {
+    sku            = "standard_d2_ms"
+    memory_in_gb   = 128
+    number_of_core = 4
+
+  }
+}
+
+#-------------------------------------------------
+# Output system variables
+#-------------------------------------------------
+output "tf_builtIns" {
+    value = {
+      "module_dir"   = path.module
+      "root_dir"     = path.root
+      "curr_dir"     = path.cwd
+      "tf_workspace" = terraform.workspace
+    }
+}
+
+output "test_variables" {
+    value = {
+      "string_var"   = var.msg
+      "number_var"   = var.number_of_days
+      "bool_var"     = var.does_exist
+      "list_var"     = var.list_vm_skus
+      "object_var"   = var.azure_vm
+    }
+}
+
+```
   
 [refer for more](https://developer.hashicorp.com/terraform/language/expressions/type-constraints)
