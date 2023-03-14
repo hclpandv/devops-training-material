@@ -2,7 +2,7 @@
 
 * Terraform variables are like parameters if it is defined in variable block and does not contain `default` attribute. Then it will be prompted for the user input when you run the `terraform plan` or `terraform apply`
 
-```
+```hcl
 variable "location" {
   type = string
   description = "Azure Location / Region to host infra" //This is shown as hint when prompted to provide input
