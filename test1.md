@@ -5,8 +5,8 @@ title: Test
 
 carousels:
   - images: 
-    - image: ![](https://cdn.jsdelivr.net/gh/hclpandv/vikicdn/images/travel/kuantan/alkhwater-menu.jpeg)
-    - image: /_slides/img2.jpeg
+    - image: ../_slides/img1.jpg
+    - image: ../_slides/img2.jpg
     - image: /uploads/slider/image3.jpg
     - image: /uploads/slider/image4.jpg
   - images: 
