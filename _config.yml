@@ -24,4 +24,4 @@ kramdown:
         block:
             line_numbers: false
 
-theme: jekyll-theme-minimal
+#theme: jekyll-theme-minimal
