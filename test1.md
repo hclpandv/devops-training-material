@@ -1,8 +1,6 @@
 ---
 layout: slide
 title: Test
----
-
 carousels:
   - images: 
     - image: ../_slides/img1.jpg
@@ -14,4 +12,5 @@ carousels:
     - image: /uploads/slider/image6.jpg
     - image: /uploads/slider/image7.jpg
     - image: /uploads/slider/image8.jpg
+---
 
