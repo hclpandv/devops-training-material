@@ -250,7 +250,7 @@ A: Prometheus is used for K8 monitoring. Prometheus ecosystem consists of multip
 
 Q: How to make prometheus HA?
 
-A: You may run multiple instances of prometheus HA but grafana can use only of them as a datasource. You may put load balancer in front of multiple prometheus instances, use sticky sessions and failover if one of the prometheus instance dies. This make things complicated. Thanos is another project which solve these challenges. 
+A: You may run multiple instances of prometheus HA but grafana can use only one of them as a datasource. You may put load balancer in front of multiple prometheus instances, use sticky sessions and failover if one of the prometheus instance dies. This make things complicated. Thanos is another project which solve these challenges. 
 
 Q: What are other challenges with prometheus?
 
