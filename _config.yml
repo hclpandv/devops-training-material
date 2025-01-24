@@ -1,0 +1,27 @@
+#theme: jekyll-theme-hacker
+#remote_theme: pmarsceill/just-the-docs
+#color_scheme: "dark"
+
+# Custom site details
+title: DevOps Training Material
+description: my personal DevOps journey
+baseurl: "/devops-training-material/" # the subpath of your site, e.g. /blog
+url: "https://hclpandv.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+
+# Enable or disable the site search
+search_enabled: true
+
+# Aux links for the upper right navigation
+aux_links:
+    "Source on GitHub":
+      - "//github.com/hclpandv/devops-training-material"
+
+
+markdown: kramdown
+kramdown:
+    highlighter: rouge
+    syntax_highlighter_opts:
+        block:
+            line_numbers: false
+
+#theme: jekyll-theme-minimal
