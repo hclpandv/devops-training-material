@@ -376,6 +376,68 @@
   .explainer strong { color: var(--ink); font-weight: 600; }
   .explainer .net-color { color: var(--net); font-weight: 600; }
   .explainer .host-color { color: var(--host); font-weight: 600; }
+
+  /* --- tabs --- */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .tab-btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 500;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+    padding: 9px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .tab-btn:hover { color: var(--ink); border-color: var(--net); }
+  .tab-btn:focus-visible { outline: 2px solid var(--net); outline-offset: 2px; }
+  .tab-btn.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  /* --- reserved ranges table --- */
+  .ranges-intro {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin: 0 0 22px;
+  }
+  .ranges-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .ranges-table th {
+    text-align: left;
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    font-weight: 600;
+    padding: 0 10px 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ranges-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .ranges-table td.mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--net);
+    white-space: nowrap;
+  }
+  .ranges-table tbody tr { cursor: pointer; }
+  .ranges-table tbody tr:hover { background: var(--bg); }
+  .ranges-table tbody tr:last-child td { border-bottom: none; }
+  .ranges-table tbody tr:focus-visible { outline: 2px solid var(--net); outline-offset: -2px; }
 </style>
 </head>
 <body>
@@ -385,7 +447,12 @@
     <p>CIDR notation is just a shorthand for counting bits. Drag the slider and watch what the slash number actually controls.</p>
   </header>
 
-  <div class="card">
+  <div class="tabs" role="tablist">
+    <button class="tab-btn active" id="tabBtnViz" role="tab" aria-selected="true" aria-controls="panelViz">CIDR visualizer</button>
+    <button class="tab-btn" id="tabBtnRanges" role="tab" aria-selected="false" aria-controls="panelRanges">Reserved ranges</button>
+  </div>
+
+  <section class="card" id="panelViz" role="tabpanel" aria-labelledby="tabBtnViz">
 
     <div class="address-row">
       <input class="octet" id="o1" value="192" maxlength="3" inputmode="numeric" aria-label="First octet">
@@ -456,7 +523,69 @@
       <p><strong>The number after the slash is a bit count, nothing more.</strong> It says: "starting from the left, this many bits of the mask are locked to <span class="net-color">1</span> — the rest are <span class="host-color">0</span>." <span class="net-color">/24</span> means 24 ones then 8 zeros, which written in dotted decimal is <strong>255.255.255.0</strong>. There's no separate concept to learn — the mask and the slash number are two spellings of the same fact.</p>
     </div>
 
-  </div>
+  </section>
+
+  <section class="card" id="panelRanges" role="tabpanel" aria-labelledby="tabBtnRanges" hidden>
+    <p class="ranges-intro">Certain address blocks are set aside for specific jobs — never handed out as regular public addresses. These come from <strong>IETF RFCs</strong>, the internet's own standards documents (address allocation is run by IANA/IETF, not ISO). Tap a row to load it into the visualizer.</p>
+
+    <table class="ranges-table">
+      <thead>
+        <tr><th>Range</th><th>Purpose</th><th>Standard</th></tr>
+      </thead>
+      <tbody id="rangesBody">
+        <tr data-ip="10.0.0.0" data-prefix="8">
+          <td class="mono">10.0.0.0/8</td>
+          <td>Private network — large orgs</td>
+          <td>RFC 1918</td>
+        </tr>
+        <tr data-ip="172.16.0.0" data-prefix="12">
+          <td class="mono">172.16.0.0/12</td>
+          <td>Private network — mid-size</td>
+          <td>RFC 1918</td>
+        </tr>
+        <tr data-ip="192.168.0.0" data-prefix="16">
+          <td class="mono">192.168.0.0/16</td>
+          <td>Private network — home/small office</td>
+          <td>RFC 1918</td>
+        </tr>
+        <tr data-ip="127.0.0.0" data-prefix="8">
+          <td class="mono">127.0.0.0/8</td>
+          <td>Loopback — talks to your own machine</td>
+          <td>RFC 1122</td>
+        </tr>
+        <tr data-ip="169.254.0.0" data-prefix="16">
+          <td class="mono">169.254.0.0/16</td>
+          <td>Link-local — auto-assigned when no DHCP is found</td>
+          <td>RFC 3927</td>
+        </tr>
+        <tr data-ip="192.0.2.0" data-prefix="24">
+          <td class="mono">192.0.2.0/24</td>
+          <td>Documentation only — never routed</td>
+          <td>RFC 5737</td>
+        </tr>
+        <tr data-ip="198.51.100.0" data-prefix="24">
+          <td class="mono">198.51.100.0/24</td>
+          <td>Documentation only — never routed</td>
+          <td>RFC 5737</td>
+        </tr>
+        <tr data-ip="203.0.113.0" data-prefix="24">
+          <td class="mono">203.0.113.0/24</td>
+          <td>Documentation only — never routed</td>
+          <td>RFC 5737</td>
+        </tr>
+        <tr data-ip="224.0.0.0" data-prefix="4">
+          <td class="mono">224.0.0.0/4</td>
+          <td>Multicast — one-to-many delivery</td>
+          <td>RFC 5771</td>
+        </tr>
+        <tr data-ip="240.0.0.0" data-prefix="4">
+          <td class="mono">240.0.0.0/4</td>
+          <td>Reserved — not usable on the public internet</td>
+          <td>RFC 1112</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </main>
 
 <script>
@@ -648,6 +777,41 @@
   });
 
   render();
+
+  // --- tabs ---
+  const tabBtnViz = document.getElementById('tabBtnViz');
+  const tabBtnRanges = document.getElementById('tabBtnRanges');
+  const panelViz = document.getElementById('panelViz');
+  const panelRanges = document.getElementById('panelRanges');
+
+  function showTab(which) {
+    const vizActive = which === 'viz';
+    panelViz.hidden = !vizActive;
+    panelRanges.hidden = vizActive;
+    tabBtnViz.classList.toggle('active', vizActive);
+    tabBtnRanges.classList.toggle('active', !vizActive);
+    tabBtnViz.setAttribute('aria-selected', String(vizActive));
+    tabBtnRanges.setAttribute('aria-selected', String(!vizActive));
+  }
+
+  tabBtnViz.addEventListener('click', () => showTab('viz'));
+  tabBtnRanges.addEventListener('click', () => showTab('ranges'));
+
+  // --- reserved ranges: click a row to load it into the visualizer ---
+  document.querySelectorAll('#rangesBody tr').forEach(row => {
+    row.setAttribute('tabindex', '0');
+    const load = () => {
+      const parts = row.dataset.ip.split('.');
+      parts.forEach((p, i) => { octets[i].value = p; });
+      slider.value = row.dataset.prefix;
+      render();
+      showTab('viz');
+    };
+    row.addEventListener('click', load);
+    row.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); load(); }
+    });
+  });
 })();
 </script>
 </body>
