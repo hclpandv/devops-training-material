@@ -7,5 +7,5 @@
 - [Time management](time-mgmt.md)  
 - [cron jobs](cron.md)  
 - [service management](srv-mgmt.md)  
-- [process management](process-mgmt.md)  
+- [process management](linux-process-lab.html)  
  
