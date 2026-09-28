@@ -1,0 +1,4105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Linux Process Lab</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #07101a;
+    --bg2: #0b1622;
+    --panel: #0d1b29;
+    --panel2: #101f2e;
+    --border: #203447;
+    --text: #e8f1f8;
+    --muted: #8ea3b5;
+    --green: #57e389;
+    --cyan: #55d9ff;
+    --yellow: #ffd166;
+    --orange: #ff9f43;
+    --red: #ff6b6b;
+    --purple: #b99cff;
+    --blue: #72a7ff;
+    --shadow: 0 18px 50px rgba(0,0,0,.28);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 20% 0%, rgba(85,217,255,.07), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(87,227,137,.05), transparent 28%),
+        var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, sans-serif;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+code,
+pre,
+.mono {
+    font-family: "JetBrains Mono", monospace;
+}
+
+.container {
+    width: min(1500px, calc(100% - 32px));
+    margin: 0 auto;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+    padding: 48px 0 28px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.logo {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: #0c1b28;
+    color: var(--green);
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    box-shadow: 0 0 30px rgba(87,227,137,.08);
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(30px, 5vw, 56px);
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+.subtitle {
+    max-width: 900px;
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 16px;
+}
+
+.sim-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 15px;
+    padding: 7px 11px;
+    border: 1px solid rgba(255,209,102,.3);
+    border-radius: 999px;
+    color: var(--yellow);
+    background: rgba(255,209,102,.06);
+    font-size: 12px;
+    font-family: "JetBrains Mono", monospace;
+}
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.panel {
+    background: linear-gradient(145deg, rgba(16,31,46,.97), rgba(9,23,35,.97));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.panel-head {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+}
+
+.panel-head h2 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.panel-head p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.panel-body {
+    padding: 20px;
+}
+
+/* =========================================================
+   TOP DASHBOARD
+========================================================= */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1.25fr .75fr;
+    gap: 18px;
+}
+
+.terminal {
+    min-height: 480px;
+    background: #050b11;
+    border-color: #182b3b;
+}
+
+.terminal-top {
+    height: 48px;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #162532;
+    background: #08121b;
+}
+
+.window-dots {
+    display: flex;
+    gap: 7px;
+}
+
+.window-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #33485a;
+}
+
+.terminal-title {
+    color: #7890a2;
+    font-size: 11px;
+    font-family: "JetBrains Mono", monospace;
+}
+
+.terminal-body {
+    padding: 22px;
+}
+
+.terminal pre {
+    margin: 0;
+    min-height: 310px;
+    color: #cde4d5;
+    font-size: clamp(10px, 1.1vw, 13px);
+    line-height: 1.5;
+    overflow: auto;
+}
+
+/* =========================================================
+   ROTATING PROCESS INDICATOR
+========================================================= */
+
+.process-visual {
+    height: 310px;
+    display: grid;
+    place-items: center;
+    position: relative;
+}
+
+.process-orbit {
+    width: 210px;
+    height: 210px;
+    position: relative;
+
+    /*
+     * IMPORTANT:
+     * No animation by default.
+     * The dots remain completely still until
+     * JavaScript adds the .active class.
+     */
+    animation: none;
+}
+
+.process-orbit.active {
+    animation: orbitRotate 8s linear infinite;
+}
+
+.process-dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin: -5px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 14px rgba(87,227,137,.65);
+    transform-origin: 0 0;
+}
+
+.process-dot:nth-child(1)  { transform: rotate(0deg) translateX(100px); }
+.process-dot:nth-child(2)  { transform: rotate(30deg) translateX(100px); }
+.process-dot:nth-child(3)  { transform: rotate(60deg) translateX(100px); }
+.process-dot:nth-child(4)  { transform: rotate(90deg) translateX(100px); }
+.process-dot:nth-child(5)  { transform: rotate(120deg) translateX(100px); }
+.process-dot:nth-child(6)  { transform: rotate(150deg) translateX(100px); }
+.process-dot:nth-child(7)  { transform: rotate(180deg) translateX(100px); }
+.process-dot:nth-child(8)  { transform: rotate(210deg) translateX(100px); }
+.process-dot:nth-child(9)  { transform: rotate(240deg) translateX(100px); }
+.process-dot:nth-child(10) { transform: rotate(270deg) translateX(100px); }
+.process-dot:nth-child(11) { transform: rotate(300deg) translateX(100px); }
+.process-dot:nth-child(12) { transform: rotate(330deg) translateX(100px); }
+
+.process-core {
+    position: absolute;
+    inset: 50%;
+    transform: translate(-50%, -50%);
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    border: 1px solid rgba(87,227,137,.35);
+    background: radial-gradient(
+        circle,
+        rgba(87,227,137,.13),
+        rgba(87,227,137,.02) 65%,
+        transparent 70%
+    );
+    display: grid;
+    place-items: center;
+    text-align: center;
+}
+
+.process-core strong {
+    display: block;
+    color: var(--green);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+}
+
+.process-core span {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.process-visual.sleeping .process-orbit.active {
+    animation-duration: 16s;
+}
+
+.process-visual.sleeping .process-dot {
+    opacity: .32;
+}
+
+.process-visual.ready .process-dot {
+    background: var(--yellow);
+    box-shadow: 0 0 14px rgba(255,209,102,.5);
+}
+
+.process-visual.ready .process-core strong {
+    color: var(--yellow);
+}
+
+.process-visual.zombie .process-orbit,
+.process-visual.exited .process-orbit {
+    animation-play-state: paused;
+}
+
+.process-visual.zombie .process-dot {
+    background: var(--red);
+    box-shadow: none;
+    opacity: .4;
+}
+
+.process-visual.zombie .process-core {
+    border-color: rgba(255,107,107,.35);
+}
+
+.process-visual.zombie .process-core strong {
+    color: var(--red);
+}
+
+.process-visual.exited .process-orbit {
+    opacity: .18;
+}
+
+.process-visual.exited .process-core strong {
+    color: var(--muted);
+}
+
+@keyframes orbitRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.process-caption {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #587184;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+}
+
+/* =========================================================
+   PROCESS CARD
+========================================================= */
+
+.process-card {
+    min-height: 480px;
+}
+
+.process-summary {
+    padding: 22px;
+}
+
+.process-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.process-title h2 {
+    margin: 0;
+    font-size: 23px;
+}
+
+.state-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(87,227,137,.25);
+    color: var(--green);
+    background: rgba(87,227,137,.07);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+}
+
+.state-pill.sleeping {
+    color: var(--cyan);
+    border-color: rgba(85,217,255,.25);
+    background: rgba(85,217,255,.07);
+}
+
+.state-pill.zombie {
+    color: var(--red);
+    border-color: rgba(255,107,107,.3);
+    background: rgba(255,107,107,.07);
+}
+
+.state-pill.ready {
+    color: var(--yellow);
+    border-color: rgba(255,209,102,.3);
+    background: rgba(255,209,102,.07);
+}
+
+.state-pill.exited {
+    color: var(--muted);
+    border-color: var(--border);
+    background: rgba(255,255,255,.03);
+}
+
+.metrics {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.metric {
+    padding: 12px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid #1a3041;
+    border-radius: 10px;
+}
+
+.metric-label {
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.metric-value {
+    margin-top: 5px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 15px;
+}
+
+.controls {
+    padding: 18px 22px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.btn {
+    border: 1px solid var(--border);
+    background: #122333;
+    color: var(--text);
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    transition: .18s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    border-color: #3b5870;
+    background: #172b3d;
+}
+
+.btn.primary {
+    border-color: rgba(87,227,137,.35);
+    color: var(--green);
+    background: rgba(87,227,137,.07);
+}
+
+.btn.warning {
+    border-color: rgba(255,209,102,.35);
+    color: var(--yellow);
+}
+
+.btn.danger {
+    border-color: rgba(255,107,107,.35);
+    color: var(--red);
+}
+
+.btn:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.control-row {
+    padding: 0 22px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+select,
+input[type="number"] {
+    border: 1px solid var(--border);
+    background: #08141f;
+    color: var(--text);
+    border-radius: 7px;
+    padding: 7px 9px;
+    outline: none;
+}
+
+input[type="range"] {
+    accent-color: var(--green);
+}
+
+.terminal-footer {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding-top: 12px;
+    border-top: 1px solid #162532;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.live-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+}
+
+/* =========================================================
+   LIFECYCLE
+========================================================= */
+
+.section {
+    margin-top: 18px;
+}
+
+.lifecycle {
+    padding-bottom: 20px;
+}
+
+.lifecycle-track {
+    padding: 30px 20px 18px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    overflow-x: auto;
+}
+
+.state-node {
+    position: relative;
+    min-width: 120px;
+    padding: 15px 10px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-align: center;
+    background: #0a1723;
+    transition: .25s ease;
+}
+
+.state-node strong {
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+}
+
+.state-node small {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.state-node.active {
+    transform: translateY(-4px);
+    border-color: var(--green);
+    box-shadow: 0 0 25px rgba(87,227,137,.14);
+    background: rgba(87,227,137,.06);
+}
+
+.state-node.running.active {
+    color: var(--green);
+}
+
+.state-node.sleeping.active {
+    color: var(--cyan);
+    border-color: var(--cyan);
+}
+
+.state-node.ready.active {
+    color: var(--yellow);
+    border-color: var(--yellow);
+}
+
+.state-node.zombie.active {
+    color: var(--red);
+    border-color: var(--red);
+}
+
+.lifecycle-explanation {
+    margin: 0 20px;
+    padding: 15px;
+    border-left: 3px solid var(--green);
+    background: rgba(87,227,137,.045);
+    color: #c9d8e3;
+    line-height: 1.6;
+    font-size: 13px;
+}
+
+/* =========================================================
+   TWO COLUMN
+========================================================= */
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.scheduler-track {
+    height: 64px;
+    display: flex;
+    gap: 2px;
+    padding: 12px 0;
+}
+
+.cpu-segment {
+    height: 100%;
+    flex: 1;
+    border-radius: 3px;
+    background: #122333;
+}
+
+.cpu-segment.running {
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(87,227,137,.25);
+}
+
+.cpu-segment.sleeping {
+    background: #1c4150;
+}
+
+.legend {
+    display: flex;
+    gap: 15px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.legend span::before {
+    content: "";
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 5px;
+    border-radius: 2px;
+    background: currentColor;
+}
+
+.legend .run {
+    color: var(--green);
+}
+
+.legend .sleep {
+    color: var(--cyan);
+}
+
+.education-list {
+    display: grid;
+    gap: 8px;
+}
+
+.edu-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 10px;
+    padding: 11px;
+    border: 1px solid #1a3041;
+    border-radius: 9px;
+    background: rgba(255,255,255,.02);
+}
+
+.edu-number {
+    width: 25px;
+    height: 25px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #122a3a;
+    color: var(--cyan);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+}
+
+.edu-item strong {
+    font-size: 12px;
+}
+
+.edu-item p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   TABS
+========================================================= */
+
+.tabs {
+    margin-top: 18px;
+}
+
+.tab-buttons {
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+}
+
+.tab-button {
+    flex: 0 0 auto;
+    padding: 13px 16px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.tab-button.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.memory-map {
+    display: grid;
+    gap: 5px;
+}
+
+.memory-block {
+    display: grid;
+    grid-template-columns: 120px 1fr 100px;
+    gap: 12px;
+    align-items: center;
+    padding: 11px;
+    border: 1px solid #1a3041;
+    border-radius: 8px;
+    background: #0a1723;
+    font-size: 11px;
+}
+
+.memory-block strong {
+    font-family: "JetBrains Mono", monospace;
+}
+
+.memory-bar {
+    height: 8px;
+    border-radius: 99px;
+    background: #182c3d;
+    overflow: hidden;
+}
+
+.memory-bar span {
+    display: block;
+    height: 100%;
+    background: var(--purple);
+    border-radius: inherit;
+}
+
+.trace {
+    display: grid;
+    gap: 5px;
+}
+
+.trace-line {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #07121c;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+}
+
+.trace-time {
+    color: #557083;
+}
+
+.trace-event {
+    color: #b8d0df;
+}
+
+.trace-event .syscall {
+    color: var(--cyan);
+}
+
+.trace-event .state-change {
+    color: var(--green);
+}
+
+/* =========================================================
+   REAL LINUX LAB
+========================================================= */
+
+.real-linux {
+    margin-top: 18px;
+}
+
+.real-linux-intro {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.real-linux-intro h2 {
+    margin: 0 0 7px;
+    font-size: 20px;
+}
+
+.real-linux-intro p {
+    max-width: 900px;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+    font-size: 13px;
+}
+
+.warning-box {
+    margin-top: 15px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--yellow);
+    background: rgba(255,209,102,.05);
+    color: #cdbf9d;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.pid-toolbar {
+    padding: 16px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,.08);
+}
+
+.pid-toolbar label {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.pid-input {
+    width: 130px;
+    font-family: "JetBrains Mono", monospace;
+}
+
+.command-grid {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.command-card {
+    border: 1px solid #1b3244;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #091620;
+}
+
+.command-card-head {
+    padding: 12px 13px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    border-bottom: 1px solid #1b3244;
+}
+
+.command-card-head strong {
+    color: var(--cyan);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+}
+
+.command-card-head span {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.command-code {
+    position: relative;
+    padding: 13px;
+    background: #050c12;
+}
+
+.command-code pre {
+    margin: 0;
+    padding-right: 150px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #cce6d5;
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+.command-actions {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    display: flex;
+    gap: 5px;
+}
+
+.copy-command,
+.run-command {
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid #254257;
+    background: #0e202e;
+    color: #a8c0d0;
+    font-size: 10px;
+}
+
+.run-command {
+    color: var(--green);
+    border-color: rgba(87,227,137,.25);
+}
+
+.copy-command:hover,
+.run-command:hover {
+    color: white;
+    border-color: #41647b;
+}
+
+.command-description {
+    padding: 10px 13px 13px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+.command-output {
+    display: none;
+    margin: 0 13px 13px;
+    border: 1px solid #1b3547;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #03080c;
+}
+
+.command-output.visible {
+    display: block;
+}
+
+.output-header {
+    padding: 7px 9px;
+    border-bottom: 1px solid #172b3a;
+    color: var(--yellow);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    background: #07131d;
+}
+
+.command-output pre {
+    margin: 0;
+    padding: 12px;
+    max-height: 280px;
+    overflow: auto;
+    color: #b8d3c1;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    line-height: 1.55;
+    white-space: pre;
+}
+
+.output-note {
+    padding: 8px 12px;
+    border-top: 1px solid #172b3a;
+    color: #647d8d;
+    font-size: 9px;
+}
+
+/* =========================================================
+   FORK / EXEC / WAIT
+========================================================= */
+
+.process-flow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.flow-card {
+    padding: 17px;
+    border: 1px solid #1c3446;
+    border-radius: 12px;
+    background: #0a1723;
+}
+
+.flow-card .keyword {
+    color: var(--green);
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+}
+
+.flow-card h3 {
+    margin: 9px 0 6px;
+    font-size: 14px;
+}
+
+.flow-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.footer {
+    padding: 35px 0 55px;
+    color: #5f7788;
+    text-align: center;
+    font-size: 11px;
+}
+
+kbd {
+    padding: 2px 5px;
+    border: 1px solid #2a4052;
+    border-radius: 4px;
+    background: #0b1722;
+    color: #bcd0dd;
+    font-family: "JetBrains Mono", monospace;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+    .dashboard,
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+
+    .command-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .container {
+        width: min(100% - 20px, 1500px);
+    }
+
+    header {
+        padding-top: 28px;
+    }
+
+    .metrics {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .memory-block {
+        grid-template-columns: 90px 1fr 70px;
+    }
+
+    .process-flow {
+        grid-template-columns: 1fr;
+    }
+
+    .terminal-body {
+        padding: 13px;
+    }
+
+    .command-code pre {
+        padding-right: 0;
+        padding-top: 38px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+    }
+
+    .process-orbit {
+        animation: none !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+
+    <div class="brand">
+
+        <div class="logo">ps</div>
+
+        <div>
+            <div
+                class="mono"
+                style="font-size:11px;color:var(--muted);"
+            >
+                LINUX PROCESS LAB
+            </div>
+        </div>
+
+    </div>
+
+    <h1>Run it. Inspect it. Open it up.</h1>
+
+    <p class="subtitle">
+        A visual playground for understanding what a Linux process actually is:
+        PIDs, parent processes, scheduling, sleeping, memory, file descriptors,
+        system calls, signals, and the process lifecycle.
+    </p>
+
+    <div class="sim-badge">
+        ● BROWSER SIMULATION — DATA BELOW IS MODELED, NOT YOUR REAL SYSTEM
+    </div>
+
+</header>
+
+
+<section class="dashboard">
+
+    <section class="panel terminal">
+
+        <div class="terminal-top">
+
+            <div class="window-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="terminal-title">
+                student@linux-lab:~/process-demo
+            </div>
+
+            <div
+                class="mono"
+                style="font-size:10px;color:#4f6879;"
+            >
+                bash
+            </div>
+
+        </div>
+
+
+        <div class="terminal-body">
+
+            <div
+                id="processVisual"
+                class="process-visual"
+            >
+
+                <div
+                    id="processOrbit"
+                    class="process-orbit"
+                >
+
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+                    <span class="process-dot"></span>
+
+                </div>
+
+
+                <div class="process-core">
+
+                    <div>
+
+                        <strong id="visualState">
+                            NEW
+                        </strong>
+
+                        <span>
+                            PID 4242
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="process-caption">
+                    simulated process activity
+                </div>
+
+            </div>
+
+
+            <pre id="terminalOutput"></pre>
+
+
+            <div class="terminal-footer">
+
+                <span>
+                    <span class="live-dot"></span>
+                    <span id="terminalStatus">
+                        ready to run
+                    </span>
+                </span>
+
+                <span class="mono">
+                    virtual time:
+                    <span id="virtualClock">00:00</span>
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="panel process-card">
+
+        <div class="process-summary">
+
+            <div class="process-title">
+
+                <div>
+
+                    <div
+                        class="mono"
+                        style="font-size:10px;color:var(--muted);"
+                    >
+                        SIMULATED PROCESS
+                    </div>
+
+                    <h2>clock-demo</h2>
+
+                </div>
+
+
+                <div
+                    id="statePill"
+                    class="state-pill"
+                >
+                    ● NEW
+                </div>
+
+            </div>
+
+
+            <div class="metrics">
+
+                <div class="metric">
+                    <div class="metric-label">PID</div>
+                    <div id="pidValue" class="metric-value">4242</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">PPID</div>
+                    <div class="metric-value">4100</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">CPU</div>
+                    <div id="cpuValue" class="metric-value">0.0%</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">RSS</div>
+                    <div class="metric-value">1.6 MiB</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">VSZ</div>
+                    <div class="metric-value">3.1 MiB</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">FDs</div>
+                    <div class="metric-value">3</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">SYSCALLS</div>
+                    <div id="syscallValue" class="metric-value">0</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">WRITES</div>
+                    <div id="writeValue" class="metric-value">0</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">UPTIME</div>
+                    <div id="uptimeValue" class="metric-value">0.0s</div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button id="runBtn" class="btn primary">
+                ▶ Run
+            </button>
+
+            <button id="pauseBtn" class="btn" disabled>
+                ❚❚ Pause
+            </button>
+
+            <button id="interruptBtn" class="btn warning" disabled>
+                SIGINT
+            </button>
+
+            <button id="reapBtn" class="btn danger" disabled>
+                Reap zombie
+            </button>
+
+            <button id="resetBtn" class="btn">
+                ↻ Reset
+            </button>
+
+        </div>
+
+
+        <div class="control-row">
+
+            <div class="control-group">
+
+                Mode:
+
+                <select id="modeSelect">
+
+                    <option value="sleep">
+                        write → sleep
+                    </option>
+
+                    <option value="busy">
+                        busy loop
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="control-group">
+
+                Speed:
+
+                <input
+                    id="speedRange"
+                    type="range"
+                    min="0.5"
+                    max="4"
+                    step="0.5"
+                    value="1"
+                >
+
+                <span id="speedLabel">1×</span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</section>
+
+
+<section class="panel section lifecycle">
+
+    <div class="panel-head">
+
+        <div>
+
+            <h2>1. Process lifecycle</h2>
+
+            <p>
+                Watch the simulated process move through states.
+            </p>
+
+        </div>
+
+        <div
+            class="mono"
+            style="font-size:10px;color:var(--muted);"
+        >
+            TASK STATE
+        </div>
+
+    </div>
+
+
+    <div class="lifecycle-track">
+
+        <div id="node-new" class="state-node active">
+            <strong>NEW</strong>
+            <small>created</small>
+        </div>
+
+        <div id="node-ready" class="state-node ready">
+            <strong>READY</strong>
+            <small>waiting for CPU</small>
+        </div>
+
+        <div id="node-running" class="state-node running">
+            <strong>RUNNING</strong>
+            <small>on CPU</small>
+        </div>
+
+        <div id="node-sleeping" class="state-node sleeping">
+            <strong>SLEEPING</strong>
+            <small>waiting</small>
+        </div>
+
+        <div id="node-zombie" class="state-node zombie">
+            <strong>ZOMBIE</strong>
+            <small>terminated</small>
+        </div>
+
+        <div id="node-exited" class="state-node">
+            <strong>EXITED</strong>
+            <small>reaped</small>
+        </div>
+
+    </div>
+
+
+    <div id="lifecycleExplanation" class="lifecycle-explanation">
+        NEW means the process has just been created.
+        Press Run to begin the simulation.
+    </div>
+
+</section>
+
+
+<section class="two-col section">
+
+    <section class="panel">
+
+        <div class="panel-head">
+
+            <div>
+                <h2>2. CPU scheduling</h2>
+
+                <p>
+                    One small process can spend most of its time waiting.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="panel-body">
+
+            <div id="schedulerTrack" class="scheduler-track"></div>
+
+            <div class="legend">
+
+                <span class="run">RUNNING</span>
+
+                <span class="sleep">SLEEPING</span>
+
+            </div>
+
+
+            <p
+                style="
+                    color:var(--muted);
+                    font-size:11px;
+                    line-height:1.6;
+                "
+            >
+                In
+                <b style="color:var(--green)">write → sleep</b>
+                mode, the process briefly runs, performs a modeled
+                write, then waits. In
+                <b style="color:var(--yellow)">busy loop</b>
+                mode it continuously has work to do.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="panel">
+
+        <div class="panel-head">
+
+            <div>
+
+                <h2>3. What is inside a process?</h2>
+
+                <p>A process is more than a PID.</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="panel-body">
+
+            <div class="education-list">
+
+                <div class="edu-item">
+
+                    <div class="edu-number">1</div>
+
+                    <div>
+
+                        <strong>PID / PPID</strong>
+
+                        <p>
+                            PID identifies the process.
+                            PPID identifies its parent.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="edu-item">
+
+                    <div class="edu-number">2</div>
+
+                    <div>
+
+                        <strong>Virtual address space</strong>
+
+                        <p>
+                            Code, data, heap, shared libraries
+                            and stack are mapped into the process's
+                            virtual memory.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="edu-item">
+
+                    <div class="edu-number">3</div>
+
+                    <div>
+
+                        <strong>File descriptors</strong>
+
+                        <p>
+                            stdin, stdout and stderr are three common
+                            file descriptors.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="edu-item">
+
+                    <div class="edu-number">4</div>
+
+                    <div>
+
+                        <strong>Kernel-managed state</strong>
+
+                        <p>
+                            Linux tracks scheduling state, credentials,
+                            signals, memory mappings, open files and more.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</section>
+
+
+<section class="panel tabs section">
+
+    <div class="tab-buttons">
+
+        <button class="tab-button active" data-tab="memory">
+            Memory
+        </button>
+
+        <button class="tab-button" data-tab="fds">
+            File descriptors
+        </button>
+
+        <button class="tab-button" data-tab="trace">
+            Kernel trace
+        </button>
+
+        <button class="tab-button" data-tab="fork">
+            fork / exec / wait
+        </button>
+
+    </div>
+
+
+    <div id="tab-memory" class="tab-content active">
+
+        <div
+            style="
+                margin-bottom:15px;
+                color:var(--muted);
+                font-size:12px;
+            "
+        >
+            This is a simplified model of a process's virtual
+            address space.
+        </div>
+
+
+        <div class="memory-map">
+
+            <div class="memory-block">
+                <strong>TEXT</strong>
+                <div class="memory-bar">
+                    <span style="width:28%"></span>
+                </div>
+                <span class="mono">64 KiB</span>
+            </div>
+
+            <div class="memory-block">
+                <strong>DATA</strong>
+                <div class="memory-bar">
+                    <span style="width:13%"></span>
+                </div>
+                <span class="mono">24 KiB</span>
+            </div>
+
+            <div class="memory-block">
+                <strong>BSS</strong>
+                <div class="memory-bar">
+                    <span style="width:7%"></span>
+                </div>
+                <span class="mono">12 KiB</span>
+            </div>
+
+            <div class="memory-block">
+                <strong>HEAP</strong>
+                <div class="memory-bar">
+                    <span style="width:25%"></span>
+                </div>
+                <span class="mono">56 KiB</span>
+            </div>
+
+            <div class="memory-block">
+                <strong>LIBRARIES</strong>
+                <div class="memory-bar">
+                    <span style="width:70%"></span>
+                </div>
+                <span class="mono">1.1 MiB</span>
+            </div>
+
+            <div class="memory-block">
+                <strong>STACK</strong>
+                <div class="memory-bar">
+                    <span style="width:11%"></span>
+                </div>
+                <span class="mono">32 KiB</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="tab-fds" class="tab-content">
+
+        <p style="color:var(--muted);font-size:12px;">
+            File descriptors are small integers referring to open resources.
+        </p>
+
+
+        <div class="education-list">
+
+            <div class="edu-item">
+
+                <div class="edu-number">0</div>
+
+                <div>
+
+                    <strong>stdin</strong>
+
+                    <p>
+                        Standard input — normally connected to the terminal.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edu-item">
+
+                <div class="edu-number">1</div>
+
+                <div>
+
+                    <strong>stdout</strong>
+
+                    <p>
+                        Standard output — where normal program output goes.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edu-item">
+
+                <div class="edu-number">2</div>
+
+                <div>
+
+                    <strong>stderr</strong>
+
+                    <p>
+                        Standard error — commonly used for diagnostics.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="tab-trace" class="tab-content">
+
+        <p style="color:var(--muted);font-size:12px;">
+            A simplified trace of what the simulated process is doing.
+            Real Linux system calls can be observed with
+            <code>strace</code>.
+        </p>
+
+        <div id="trace" class="trace"></div>
+
+    </div>
+
+
+    <div id="tab-fork" class="tab-content">
+
+        <div class="process-flow">
+
+            <div class="flow-card">
+
+                <div class="keyword">fork()</div>
+
+                <h3>Make a child</h3>
+
+                <p>
+                    A process asks the kernel to create a child.
+                    The child receives its own PID and initially
+                    resembles the parent.
+                </p>
+
+            </div>
+
+
+            <div class="flow-card">
+
+                <div class="keyword">execve()</div>
+
+                <h3>Replace the program</h3>
+
+                <p>
+                    The child can replace its current program image
+                    with another executable. The PID normally remains
+                    the same.
+                </p>
+
+            </div>
+
+
+            <div class="flow-card">
+
+                <div class="keyword">waitpid()</div>
+
+                <h3>Reap the child</h3>
+
+                <p>
+                    A parent can wait for a child to terminate.
+                    This is important because an exited child can
+                    temporarily remain as a zombie.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="panel real-linux section">
+
+    <div class="real-linux-intro">
+
+        <h2>4. Real Linux Lab</h2>
+
+        <p>
+            Now connect the model to a real Linux system.
+            Enter a PID below. Every command can be copied and
+            "run" inside this page to display representative Linux
+            output. The browser does not execute commands on your machine.
+        </p>
+
+
+        <div class="warning-box">
+
+            <strong>Important:</strong>
+
+            The output produced by the
+            <b>Run</b>
+            buttons is
+            <b>sample output</b>.
+            It is intentionally modeled so students can learn what
+            the real commands look like before running them on Linux.
+            Commands involving
+            <code>kill</code>
+            can change process state when executed on a real system.
+
+        </div>
+
+    </div>
+
+
+    <div class="pid-toolbar">
+
+        <label for="realPid">
+            Your real PID:
+        </label>
+
+
+        <input
+            id="realPid"
+            class="pid-input"
+            type="number"
+            min="1"
+            value="12345"
+            placeholder="12345"
+        >
+
+
+        <button id="setPidBtn" class="btn primary">
+            Update commands
+        </button>
+
+
+        <span
+            class="mono"
+            style="
+                font-size:10px;
+                color:var(--muted);
+            "
+        >
+            Tip:
+            <code>echo $$</code>
+            shows your current shell PID.
+        </span>
+
+    </div>
+
+
+    <div class="command-grid">
+
+        <article class="command-card" data-command="ps">
+
+            <div class="command-card-head">
+                <strong>ps — process snapshot</strong>
+                <span>START HERE</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-ps"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-ps"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-ps"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Shows a compact snapshot of one process.
+                Compare PID, PPID, state, CPU, memory,
+                runtime and command line.
+            </div>
+
+            <div id="output-cmd-ps" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="psf">
+
+            <div class="command-card-head">
+                <strong>ps -f — parent relationship</strong>
+                <span>PID / PPID</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-psf"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-psf"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-psf"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                The full-format view makes PID, PPID,
+                user and command information easier to see.
+            </div>
+
+            <div id="output-cmd-psf" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="psaux">
+
+            <div class="command-card-head">
+                <strong>ps aux — wider process view</strong>
+                <span>OVERVIEW</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-psaux"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-psaux"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-psaux"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Shows CPU, memory, user and command information
+                across a broader process listing.
+            </div>
+
+            <div id="output-cmd-psaux" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="pstree">
+
+            <div class="command-card-head">
+                <strong>pstree — process hierarchy</strong>
+                <span>PARENTS / CHILDREN</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-pstree"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-pstree"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-pstree"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Shows processes as a tree. This makes
+                parent/child relationships easier to understand.
+            </div>
+
+            <div id="output-cmd-pstree" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="status">
+
+            <div class="command-card-head">
+                <strong>/proc/PID/status</strong>
+                <span>KERNEL VIEW</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-status"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-status"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-status"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Linux exposes detailed process information
+                through the <code>/proc</code> pseudo-filesystem.
+            </div>
+
+            <div id="output-cmd-status" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="maps">
+
+            <div class="command-card-head">
+                <strong>/proc/PID/maps</strong>
+                <span>MEMORY</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-maps"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-maps"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-maps"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Shows virtual memory mappings. Compare this
+                with the simplified Memory tab above.
+            </div>
+
+            <div id="output-cmd-maps" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="fd">
+
+            <div class="command-card-head">
+                <strong>/proc/PID/fd</strong>
+                <span>FILE DESCRIPTORS</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-fd"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-fd"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-fd"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Lists the process's open file descriptors.
+            </div>
+
+            <div id="output-cmd-fd" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="top">
+
+            <div class="command-card-head">
+                <strong>top — live process view</strong>
+                <span>LIVE</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-top"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-top"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-top"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                A continuously updating process monitor.
+                Great for comparing sleeping and CPU-heavy processes.
+            </div>
+
+            <div id="output-cmd-top" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="strace">
+
+            <div class="command-card-head">
+                <strong>strace — system calls</strong>
+                <span>ADVANCED</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-strace"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-strace"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-strace"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Attaches to a running process and displays
+                system calls such as write, nanosleep and exit.
+            </div>
+
+            <div id="output-cmd-strace" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="lsof">
+
+            <div class="command-card-head">
+                <strong>lsof — open resources</strong>
+                <span>FILES / SOCKETS</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-lsof"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-lsof"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-lsof"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Shows files, devices, pipes, sockets and
+                other resources associated with the process.
+            </div>
+
+            <div id="output-cmd-lsof" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="stop">
+
+            <div class="command-card-head">
+                <strong>kill — SIGSTOP</strong>
+                <span>CHANGES STATE</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-stop"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-stop"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-stop"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Sends SIGSTOP to stop a process.
+                The browser simulation does not send it;
+                the Run button only displays sample output.
+            </div>
+
+            <div id="output-cmd-stop" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="cont">
+
+            <div class="command-card-head">
+                <strong>kill — SIGCONT</strong>
+                <span>RESUME</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-cont"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-cont"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-cont"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Sends SIGCONT to allow a stopped process
+                to continue executing.
+            </div>
+
+            <div id="output-cmd-cont" class="command-output"></div>
+
+        </article>
+
+
+        <article class="command-card" data-command="threads">
+
+            <div class="command-card-head">
+                <strong>ps -L — threads</strong>
+                <span>THREADS</span>
+            </div>
+
+            <div class="command-code">
+
+                <pre id="cmd-threads"></pre>
+
+                <div class="command-actions">
+
+                    <button
+                        class="run-command"
+                        data-command="cmd-threads"
+                    >
+                        ▶ Run
+                    </button>
+
+                    <button
+                        class="copy-command"
+                        data-command="cmd-threads"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="command-description">
+                Processes can contain multiple threads.
+                This command helps reveal their relationship.
+            </div>
+
+            <div id="output-cmd-threads" class="command-output"></div>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+<section class="panel section">
+
+    <div class="panel-head">
+
+        <div>
+
+            <h2>5. Suggested student experiment</h2>
+
+            <p>
+                Move from the model to a real Linux process.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel-body">
+
+        <div class="education-list">
+
+            <div class="edu-item">
+
+                <div class="edu-number">1</div>
+
+                <div>
+
+                    <strong>Run the simulation</strong>
+
+                    <p>
+                        Start <b>clock-demo</b>. Watch RUNNING alternate
+                        with SLEEPING.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edu-item">
+
+                <div class="edu-number">2</div>
+
+                <div>
+
+                    <strong>Switch to busy loop</strong>
+
+                    <p>
+                        Notice how a continuously runnable process behaves
+                        differently from one that frequently sleeps.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edu-item">
+
+                <div class="edu-number">3</div>
+
+                <div>
+
+                    <strong>Create a real process</strong>
+
+                    <p>
+                        On Linux, run:
+                        <code>sleep 300</code>
+                        in another terminal.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edu-item">
+
+                <div class="edu-number">4</div>
+
+                <div>
+
+                    <strong>Find its PID</strong>
+
+                    <p>
+                        Try:
+                        <code>pgrep sleep</code>
+                        or
+                        <code>ps aux | grep sleep</code>.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edu-item">
+
+                <div class="edu-number">5</div>
+
+                <div>
+
+                    <strong>Inspect it</strong>
+
+                    <p>
+                        Put that PID into the Real Linux Lab.
+                        Start with <code>ps</code> and
+                        <code>/proc/PID/status</code>.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="edu-item">
+
+                <div class="edu-number">6</div>
+
+                <div>
+
+                    <strong>Change its state</strong>
+
+                    <p>
+                        On your own test process, try
+                        <code>SIGSTOP</code> and
+                        <code>SIGCONT</code>, then inspect it again.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer class="footer">
+
+    Linux Process Lab · Browser simulation + real Linux inspection guide
+
+    <br><br>
+
+    The browser simulation never reads your operating system
+    or its processes. Command output shown by the Run buttons
+    is intentionally simulated.
+
+</footer>
+
+</div>
+
+
+<script>
+
+/*
+|--------------------------------------------------------------------------
+| LINUX PROCESS LAB
+|--------------------------------------------------------------------------
+|
+| This page never accesses the student's operating system.
+| The process data is simulated.
+|
+|--------------------------------------------------------------------------
+*/
+
+const state = {
+
+    pid: 4242,
+
+    running: false,
+
+    paused: false,
+
+    phase: "NEW",
+
+    mode: "sleep",
+
+    speed: 1,
+
+    virtualMs: 0,
+
+    writes: 0,
+
+    syscalls: 0,
+
+    bootMs: 0,
+
+    lastSecond: -1,
+
+    trace: [],
+
+    exitCode: null
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| DOM
+|--------------------------------------------------------------------------
+*/
+
+const terminalOutput =
+    document.getElementById("terminalOutput");
+
+const terminalStatus =
+    document.getElementById("terminalStatus");
+
+const virtualClock =
+    document.getElementById("virtualClock");
+
+const statePill =
+    document.getElementById("statePill");
+
+const visualState =
+    document.getElementById("visualState");
+
+const processVisual =
+    document.getElementById("processVisual");
+
+const processOrbit =
+    document.getElementById("processOrbit");
+
+const cpuValue =
+    document.getElementById("cpuValue");
+
+const syscallValue =
+    document.getElementById("syscallValue");
+
+const writeValue =
+    document.getElementById("writeValue");
+
+const uptimeValue =
+    document.getElementById("uptimeValue");
+
+const runBtn =
+    document.getElementById("runBtn");
+
+const pauseBtn =
+    document.getElementById("pauseBtn");
+
+const interruptBtn =
+    document.getElementById("interruptBtn");
+
+const reapBtn =
+    document.getElementById("reapBtn");
+
+const resetBtn =
+    document.getElementById("resetBtn");
+
+const modeSelect =
+    document.getElementById("modeSelect");
+
+const speedRange =
+    document.getElementById("speedRange");
+
+const speedLabel =
+    document.getElementById("speedLabel");
+
+const lifecycleExplanation =
+    document.getElementById("lifecycleExplanation");
+
+const schedulerTrack =
+    document.getElementById("schedulerTrack");
+
+const traceElement =
+    document.getElementById("trace");
+
+const realPidInput =
+    document.getElementById("realPid");
+
+
+/*
+|--------------------------------------------------------------------------
+| STATE EXPLANATIONS
+|--------------------------------------------------------------------------
+*/
+
+const explanations = {
+
+    NEW:
+        "NEW means the process has just been created. The kernel is preparing the task before it can become runnable.",
+
+    READY:
+        "READY means the process is runnable but is waiting for the scheduler to give it CPU time.",
+
+    RUNNING:
+        "RUNNING means the task is currently executing instructions on a CPU. Our model briefly runs, performs a write, then sleeps.",
+
+    SLEEPING:
+        "SLEEPING means the process is waiting for something rather than continuously consuming CPU. Our model is waiting in a sleep-like operation.",
+
+    ZOMBIE:
+        "ZOMBIE means the process has terminated, but its parent has not yet collected its exit status. The process is no longer executing.",
+
+    EXITED:
+        "EXITED means the parent has collected the child's termination status. The remaining process bookkeeping can now be removed."
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| HELPERS
+|--------------------------------------------------------------------------
+*/
+
+function formatTime(ms) {
+
+    const seconds =
+        Math.floor(ms / 1000);
+
+    const minutes =
+        Math.floor(seconds / 60);
+
+    const remaining =
+        seconds % 60;
+
+    return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(remaining).padStart(2, "0")
+    );
+}
+
+
+function formatUptime(ms) {
+
+    return (
+        (ms / 1000).toFixed(1) +
+        "s"
+    );
+}
+
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| PROCESS STATE
+|--------------------------------------------------------------------------
+*/
+
+function setPhase(newPhase) {
+
+    if (state.phase === newPhase) {
+        return;
+    }
+
+    state.phase = newPhase;
+
+    addTrace(
+        "state",
+        "scheduler: task state → " + newPhase
+    );
+
+    updateLifecycle();
+}
+
+
+function addTrace(type, message) {
+
+    const seconds =
+        (state.virtualMs / 1000).toFixed(3);
+
+    state.trace.unshift({
+        time: seconds,
+        type,
+        message
+    });
+
+    state.trace =
+        state.trace.slice(0, 12);
+
+    renderTrace();
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| START
+|--------------------------------------------------------------------------
+*/
+
+runBtn.addEventListener("click", () => {
+
+    if (state.phase === "EXITED") {
+        resetSimulation();
+    }
+
+    state.running = true;
+    state.paused = false;
+
+    if (state.phase === "NEW") {
+
+        state.bootMs = 0;
+
+        setPhase("READY");
+
+        addTrace(
+            "state",
+            "process became runnable"
+        );
+    }
+
+    terminalStatus.textContent =
+        "simulation running";
+
+    pauseBtn.textContent =
+        "❚❚ Pause";
+
+    updateAll();
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| PAUSE
+|--------------------------------------------------------------------------
+*/
+
+pauseBtn.addEventListener("click", () => {
+
+    if (
+        !state.running ||
+        state.phase === "EXITED"
+    ) {
+        return;
+    }
+
+    state.paused =
+        !state.paused;
+
+    pauseBtn.textContent =
+        state.paused
+            ? "▶ Resume"
+            : "❚❚ Pause";
+
+    terminalStatus.textContent =
+        state.paused
+            ? "simulation paused"
+            : "simulation running";
+
+    updateAll();
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| SIGINT
+|--------------------------------------------------------------------------
+*/
+
+interruptBtn.addEventListener("click", () => {
+
+    if (
+        !state.running ||
+        state.phase === "EXITED" ||
+        state.phase === "ZOMBIE"
+    ) {
+        return;
+    }
+
+    state.running = false;
+
+    state.paused = false;
+
+    state.exitCode = 130;
+
+    setPhase("ZOMBIE");
+
+    state.syscalls++;
+
+    addTrace(
+        "syscall",
+        "kill(" + state.pid + ", SIGINT)"
+    );
+
+    addTrace(
+        "state",
+        "process terminated → waiting for parent to reap"
+    );
+
+    terminalStatus.textContent =
+        "terminated — zombie until reaped";
+
+    reapBtn.disabled = false;
+
+    updateAll();
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| REAP
+|--------------------------------------------------------------------------
+*/
+
+reapBtn.addEventListener("click", () => {
+
+    if (state.phase !== "ZOMBIE") {
+        return;
+    }
+
+    setPhase("EXITED");
+
+    addTrace(
+        "syscall",
+        "waitpid(" + state.pid + ", ...) → 130"
+    );
+
+    addTrace(
+        "state",
+        "parent collected child status"
+    );
+
+    terminalStatus.textContent =
+        "process exited and was reaped";
+
+    reapBtn.disabled = true;
+
+    updateAll();
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| RESET
+|--------------------------------------------------------------------------
+*/
+
+resetBtn.addEventListener("click", resetSimulation);
+
+
+function resetSimulation() {
+
+    state.running = false;
+    state.paused = false;
+    state.phase = "NEW";
+    state.virtualMs = 0;
+    state.writes = 0;
+    state.syscalls = 0;
+    state.bootMs = 0;
+    state.lastSecond = -1;
+    state.trace = [];
+    state.exitCode = null;
+
+    pauseBtn.textContent =
+        "❚❚ Pause";
+
+    reapBtn.disabled = true;
+
+    terminalStatus.textContent =
+        "ready to run";
+
+    state.trace = [];
+
+    addTrace(
+        "state",
+        "simulation reset"
+    );
+
+    updateAll();
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| MODE
+|--------------------------------------------------------------------------
+*/
+
+modeSelect.addEventListener("change", () => {
+
+    state.mode =
+        modeSelect.value;
+
+    addTrace(
+        "state",
+        "mode changed → " + state.mode
+    );
+
+    updateAll();
+});
+
+
+speedRange.addEventListener("input", () => {
+
+    state.speed =
+        Number(speedRange.value);
+
+    speedLabel.textContent =
+        state.speed + "×";
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| SIMULATION CLOCK
+|--------------------------------------------------------------------------
+*/
+
+let lastFrame =
+    performance.now();
+
+
+function tick(now) {
+
+    const realDelta =
+        Math.min(
+            now - lastFrame,
+            100
+        );
+
+    lastFrame = now;
+
+
+    if (
+        state.running &&
+        !state.paused &&
+        state.phase !== "EXITED" &&
+        state.phase !== "ZOMBIE"
+    ) {
+
+        const virtualDelta =
+            realDelta * state.speed;
+
+        state.virtualMs +=
+            virtualDelta;
+
+        state.bootMs +=
+            virtualDelta;
+
+        simulateProcess();
+
+        updateAll();
+    }
+
+
+    requestAnimationFrame(tick);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| SIMULATED PROCESS
+|--------------------------------------------------------------------------
+*/
+
+function simulateProcess() {
+
+    if (state.bootMs < 300) {
+
+        setPhase("READY");
+
+        return;
+    }
+
+
+    /*
+     * BUSY LOOP
+     */
+
+    if (state.mode === "busy") {
+
+        setPhase("RUNNING");
+
+        const second =
+            Math.floor(
+                state.virtualMs / 1000
+            );
+
+        if (
+            second !==
+            state.lastSecond
+        ) {
+
+            state.lastSecond =
+                second;
+
+            state.writes++;
+
+            state.syscalls++;
+
+            addTrace(
+                "syscall",
+                'write(1, "busy-loop tick", 15)'
+            );
+        }
+
+        return;
+    }
+
+
+    /*
+     * WRITE → SLEEP
+     */
+
+    const cycle =
+        state.virtualMs % 1000;
+
+
+    if (cycle < 120) {
+
+        setPhase("RUNNING");
+
+        const second =
+            Math.floor(
+                state.virtualMs / 1000
+            );
+
+        if (
+            second !==
+            state.lastSecond
+        ) {
+
+            state.lastSecond =
+                second;
+
+            state.writes++;
+
+            state.syscalls++;
+
+            addTrace(
+                "syscall",
+                'write(1, "tick", 5)'
+            );
+        }
+
+    } else {
+
+        setPhase("SLEEPING");
+
+        const second =
+            Math.floor(
+                state.virtualMs / 1000
+            );
+
+        if (
+            second !==
+            state.lastSecond
+        ) {
+
+            state.lastSecond =
+                second;
+
+            state.syscalls++;
+
+            addTrace(
+                "syscall",
+                "clock_nanosleep(...)"
+            );
+        }
+    }
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| UPDATE EVERYTHING
+|--------------------------------------------------------------------------
+*/
+
+function updateAll() {
+
+    updateLifecycle();
+
+    updateMetrics();
+
+    updateTerminal();
+
+    updateScheduler();
+
+    updateVisual();
+
+    updateButtons();
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| LIFECYCLE
+|--------------------------------------------------------------------------
+*/
+
+function updateLifecycle() {
+
+    const nodes = [
+        "new",
+        "ready",
+        "running",
+        "sleeping",
+        "zombie",
+        "exited"
+    ];
+
+
+    nodes.forEach(name => {
+
+        const node =
+            document.getElementById(
+                "node-" + name
+            );
+
+        if (node) {
+            node.classList.remove(
+                "active"
+            );
+        }
+    });
+
+
+    const activeNode =
+        document.getElementById(
+            "node-" +
+            state.phase.toLowerCase()
+        );
+
+
+    if (activeNode) {
+        activeNode.classList.add(
+            "active"
+        );
+    }
+
+
+    lifecycleExplanation.textContent =
+        explanations[state.phase];
+
+
+    statePill.textContent =
+        "● " + state.phase;
+
+
+    statePill.className =
+        "state-pill " +
+        state.phase.toLowerCase();
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| VISUAL INDICATOR
+|--------------------------------------------------------------------------
+|
+| FIX:
+|
+| The orbit is STATIC by default.
+|
+| It only receives the .active class when the simulation
+| has actually started and is not paused.
+|
+|--------------------------------------------------------------------------
+*/
+
+function updateVisual() {
+
+    processVisual.className =
+        "process-visual " +
+        state.phase.toLowerCase();
+
+    visualState.textContent =
+        state.phase;
+
+
+    /*
+     * Start animation only after Start has been clicked.
+     *
+     * Pausing removes .active.
+     * Zombie/exited removes .active.
+     */
+
+    const shouldAnimate =
+        state.running &&
+        !state.paused &&
+        state.phase !== "ZOMBIE" &&
+        state.phase !== "EXITED";
+
+
+    processOrbit.classList.toggle(
+        "active",
+        shouldAnimate
+    );
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| METRICS
+|--------------------------------------------------------------------------
+*/
+
+function updateMetrics() {
+
+    let cpu =
+        "0.0%";
+
+
+    if (state.phase === "RUNNING") {
+
+        cpu =
+            state.mode === "busy"
+                ? "97.8%"
+                : "8.2%";
+
+    } else if (
+        state.phase === "SLEEPING"
+    ) {
+
+        cpu =
+            "0.2%";
+    }
+
+
+    cpuValue.textContent =
+        cpu;
+
+    syscallValue.textContent =
+        state.syscalls;
+
+    writeValue.textContent =
+        state.writes;
+
+    uptimeValue.textContent =
+        formatUptime(
+            state.virtualMs
+        );
+
+    virtualClock.textContent =
+        formatTime(
+            state.virtualMs
+        );
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| TERMINAL INFO
+|--------------------------------------------------------------------------
+*/
+
+function updateTerminal() {
+
+    const cpu =
+        state.mode === "busy"
+            ? "97.8%"
+            : state.phase === "RUNNING"
+                ? "8.2%"
+                : "0.2%";
+
+
+    terminalOutput.textContent =
+`student@linux-lab:~$ ./clock-demo
+
+ PROCESS
+ ─────────────────────────────────────
+
+ PID       ${state.pid}
+ PPID      4100
+ STATE     ${state.phase}
+ MODE      ${state.mode}
+
+ CPU       ${cpu}
+ RSS       1.6 MiB
+ VSZ       3.1 MiB
+
+ FILE DESCRIPTORS
+
+ 0         stdin
+ 1         stdout
+ 2         stderr
+
+ ACTIVITY
+
+ writes:   ${String(state.writes).padStart(5)}
+ syscalls: ${String(state.syscalls).padStart(5)}
+ uptime:   ${formatUptime(state.virtualMs)}
+
+ status:   ${state.phase.toLowerCase()}
+
+student@linux-lab:~$`;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| SCHEDULER
+|--------------------------------------------------------------------------
+*/
+
+function updateScheduler() {
+
+    schedulerTrack.innerHTML = "";
+
+    const count = 70;
+
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        let className =
+            "cpu-segment sleeping";
+
+
+        if (state.mode === "busy") {
+
+            className =
+                "cpu-segment running";
+
+        } else {
+
+            const position =
+                (i / count) * 1000;
+
+            if (position < 120) {
+
+                className =
+                    "cpu-segment running";
+            }
+        }
+
+
+        const segment =
+            document.createElement("div");
+
+        segment.className =
+            className;
+
+        schedulerTrack.appendChild(
+            segment
+        );
+    }
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| TRACE
+|--------------------------------------------------------------------------
+*/
+
+function renderTrace() {
+
+    traceElement.innerHTML = "";
+
+
+    state.trace.forEach(item => {
+
+        const row =
+            document.createElement("div");
+
+        row.className =
+            "trace-line";
+
+
+        const time =
+            document.createElement("span");
+
+        time.className =
+            "trace-time";
+
+        time.textContent =
+            item.time + "s";
+
+
+        const event =
+            document.createElement("span");
+
+        event.className =
+            "trace-event";
+
+
+        if (
+            item.type === "syscall"
+        ) {
+
+            event.innerHTML =
+                '<span class="syscall">syscall</span> ' +
+                escapeHtml(
+                    item.message
+                );
+
+        } else {
+
+            event.innerHTML =
+                '<span class="state-change">state</span> ' +
+                escapeHtml(
+                    item.message
+                );
+        }
+
+
+        row.appendChild(time);
+
+        row.appendChild(event);
+
+        traceElement.appendChild(row);
+    });
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| BUTTON STATE
+|--------------------------------------------------------------------------
+*/
+
+function updateButtons() {
+
+    runBtn.disabled =
+        state.running &&
+        !state.paused;
+
+
+    pauseBtn.disabled =
+        !state.running ||
+        state.phase === "ZOMBIE" ||
+        state.phase === "EXITED";
+
+
+    interruptBtn.disabled =
+        !state.running ||
+        state.phase === "ZOMBIE" ||
+        state.phase === "EXITED";
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| TABS
+|--------------------------------------------------------------------------
+*/
+
+document
+    .querySelectorAll(".tab-button")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                document
+                    .querySelectorAll(
+                        ".tab-button"
+                    )
+                    .forEach(btn =>
+                        btn.classList.remove(
+                            "active"
+                        )
+                    );
+
+
+                document
+                    .querySelectorAll(
+                        ".tab-content"
+                    )
+                    .forEach(content =>
+                        content.classList.remove(
+                            "active"
+                        )
+                    );
+
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                const target =
+                    document.getElementById(
+                        "tab-" +
+                        button.dataset.tab
+                    );
+
+
+                target.classList.add(
+                    "active"
+                );
+            }
+        );
+
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| REAL LINUX COMMANDS
+|--------------------------------------------------------------------------
+*/
+
+const commandTemplates = {
+
+    "cmd-ps":
+        pid =>
+`ps -p ${pid} -o pid,ppid,state,stat,%cpu,%mem,rss,vsz,etime,cmd`,
+
+    "cmd-psf":
+        pid =>
+`ps -fp ${pid}`,
+
+    "cmd-psaux":
+        pid =>
+`ps aux | grep ${pid}`,
+
+    "cmd-pstree":
+        pid =>
+`pstree -p ${pid}`,
+
+    "cmd-status":
+        pid =>
+`cat /proc/${pid}/status`,
+
+    "cmd-maps":
+        pid =>
+`cat /proc/${pid}/maps`,
+
+    "cmd-fd":
+        pid =>
+`ls -l /proc/${pid}/fd`,
+
+    "cmd-top":
+        pid =>
+`top -p ${pid}`,
+
+    "cmd-strace":
+        pid =>
+`strace -p ${pid}`,
+
+    "cmd-lsof":
+        pid =>
+`lsof -p ${pid}`,
+
+    "cmd-stop":
+        pid =>
+`kill -SIGSTOP ${pid}`,
+
+    "cmd-cont":
+        pid =>
+`kill -SIGCONT ${pid}`,
+
+    "cmd-threads":
+        pid =>
+`ps -L -p ${pid}`
+};
+
+
+function getRealPid() {
+
+    const value =
+        realPidInput.value.trim();
+
+
+    if (
+        /^[0-9]+$/.test(value)
+    ) {
+        return value;
+    }
+
+
+    return "12345";
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| SAMPLE OUTPUT
+|--------------------------------------------------------------------------
+*/
+
+function sampleOutput(type, pid) {
+
+    const common = {
+
+        ps:
+`  PID  PPID S STAT %CPU %MEM    RSS    VSZ     ELAPSED CMD
+${pid.padStart(5)}  4100 S S     0.2  0.1   1632   3180       02:41 ./clock-demo`,
+
+        psf:
+`UID          PID    PPID  C STIME TTY          TIME CMD
+student    ${pid}    4100  0 14:21 pts/2    00:00:01 ./clock-demo`,
+
+        psaux:
+`USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+student    ${pid}  0.2  0.1   3180  1632 pts/2   S+   14:21   0:01 ./clock-demo`,
+
+        pstree:
+`bash(4100)───clock-demo(${pid})`,
+
+        status:
+`Name:\tclock-demo
+Umask:\t0022
+State:\tS (sleeping)
+Tgid:\t${pid}
+Ngid:\t0
+Pid:\t${pid}
+PPid:\t4100
+TracerPid:\t0
+Uid:\t1000\t1000\t1000\t1000
+Gid:\t1000\t1000\t1000\t1000
+Threads:\t1
+VmPeak:\t3180 kB
+VmSize:\t3180 kB
+VmRSS:\t1632 kB
+RssAnon:\t512 kB
+RssFile:\t1120 kB
+FDSize:\t64
+voluntary_ctxt_switches:\t128
+nonvoluntary_ctxt_switches:\t3`,
+
+        maps:
+`55a1c0000000-55a1c0001000 r--p 00000000 08:01 184321 /home/student/clock-demo
+55a1c0001000-55a1c0002000 r-xp 00001000 08:01 184321 /home/student/clock-demo
+55a1c0002000-55a1c0003000 r--p 00002000 08:01 184321 /home/student/clock-demo
+55a1c0003000-55a1c0004000 rw-p 00003000 08:01 184321 /home/student/clock-demo
+55a1d4000000-55a1d4021000 rw-p 00000000 00:00 0 [heap]
+7f1a2c000000-7f1a2c021000 r--p 00000000 08:01 201234 /usr/lib/libc.so.6
+7ffd9c120000-7ffd9c141000 rw-p 00000000 00:00 0 [stack]`,
+
+        fd:
+`total 0
+lrwx------ 1 student student 64 Sep 28 14:24 0 -> /dev/pts/2
+lrwx------ 1 student student 64 Sep 28 14:24 1 -> /dev/pts/2
+lrwx------ 1 student student 64 Sep 28 14:24 2 -> /dev/pts/2`,
+
+        top:
+`top - 14:24:31 up 3:12,  1 user,  load average: 0.08, 0.04, 0.02
+Tasks:   1 total,   0 running,   1 sleeping
+%Cpu(s):  0.2 us,  0.1 sy, 99.7 id
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+${pid} student   20   0    3180   1632   1120 S   0.2  0.1   0:01.22 clock-demo`,
+
+        strace:
+`clock_nanosleep(CLOCK_REALTIME, 0, {tv_sec=1, tv_nsec=0}, NULL) = 0
+write(1, "tick\\n", 5)                     = 5
+clock_nanosleep(CLOCK_REALTIME, 0, {tv_sec=1, tv_nsec=0}, NULL) = 0
+write(1, "tick\\n", 5)                     = 5
+clock_nanosleep(CLOCK_REALTIME, 0, {tv_sec=1, tv_nsec=0}, NULL) = 0`,
+
+        lsof:
+`COMMAND     PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+clock-demo ${pid} student  0u   CHR  136,2      0t0    5 /dev/pts/2
+clock-demo ${pid} student  1u   CHR  136,2      0t0    5 /dev/pts/2
+clock-demo ${pid} student  2u   CHR  136,2      0t0    5 /dev/pts/2
+clock-demo ${pid} student  cwd    DIR    8,1     4096 123 /home/student
+clock-demo ${pid} student  txt    REG    8,1    18240 456 /home/student/clock-demo`,
+
+        stop:
+`$ kill -SIGSTOP ${pid}
+
+Signal sent successfully.
+
+Run:
+  ps -p ${pid} -o pid,ppid,state,stat,cmd
+
+Expected state:
+  T (stopped)`,
+
+        cont:
+`$ kill -SIGCONT ${pid}
+
+Signal sent successfully.
+
+The process is now allowed to continue.
+
+Run:
+  ps -p ${pid} -o pid,ppid,state,stat,cmd`,
+
+        threads:
+`    PID     LWP TTY          TIME CMD
+${pid}     ${pid} pts/2    00:00:01 clock-demo`
+    };
+
+
+    return common[type] ||
+        "No sample output available.";
+}
+
+
+function updateLinuxCommands() {
+
+    const pid =
+        getRealPid();
+
+
+    Object.entries(
+        commandTemplates
+    ).forEach(
+        ([id, builder]) => {
+
+            const element =
+                document.getElementById(id);
+
+            if (element) {
+
+                element.textContent =
+                    builder(pid);
+            }
+        }
+    );
+}
+
+
+function commandTypeFromId(id) {
+
+    return id
+        .replace("cmd-", "");
+}
+
+
+function showSampleOutput(commandId) {
+
+    const pid =
+        getRealPid();
+
+
+    const type =
+        commandTypeFromId(
+            commandId
+        );
+
+
+    const output =
+        document.getElementById(
+            "output-" + commandId
+        );
+
+
+    if (!output) {
+        return;
+    }
+
+
+    const sample =
+        sampleOutput(
+            type,
+            pid
+        );
+
+
+    output.classList.add(
+        "visible"
+    );
+
+
+    output.innerHTML = `
+
+        <div class="output-header">
+            SAMPLE OUTPUT — SIMULATED
+        </div>
+
+        <pre>${escapeHtml(
+            sample
+        )}</pre>
+
+        <div class="output-note">
+            This output is generated by the educational page.
+            It was not collected from PID ${escapeHtml(pid)}.
+        </div>
+
+    `;
+}
+
+
+document
+    .getElementById("setPidBtn")
+    .addEventListener(
+        "click",
+        () => {
+
+            updateLinuxCommands();
+
+            document
+                .querySelectorAll(
+                    ".command-output"
+                )
+                .forEach(
+                    output =>
+                        output.classList.remove(
+                            "visible"
+                        )
+                );
+        }
+    );
+
+
+realPidInput.addEventListener(
+    "input",
+    updateLinuxCommands
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| COPY
+|--------------------------------------------------------------------------
+*/
+
+document
+    .querySelectorAll(
+        ".copy-command"
+    )
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            async () => {
+
+                const commandId =
+                    button.dataset.command;
+
+
+                const commandElement =
+                    document.getElementById(
+                        commandId
+                    );
+
+
+                const command =
+                    commandElement.textContent;
+
+
+                try {
+
+                    await navigator
+                        .clipboard
+                        .writeText(
+                            command
+                        );
+
+                } catch {
+
+                    const textarea =
+                        document.createElement(
+                            "textarea"
+                        );
+
+                    textarea.value =
+                        command;
+
+                    document.body.appendChild(
+                        textarea
+                    );
+
+                    textarea.select();
+
+                    document.execCommand(
+                        "copy"
+                    );
+
+                    textarea.remove();
+                }
+
+
+                const oldText =
+                    button.textContent;
+
+                button.textContent =
+                    "Copied!";
+
+
+                setTimeout(
+                    () => {
+                        button.textContent =
+                            oldText;
+                    },
+                    1000
+                );
+            }
+        );
+
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| RUN SAMPLE OUTPUT BUTTONS
+|--------------------------------------------------------------------------
+*/
+
+document
+    .querySelectorAll(
+        ".run-command"
+    )
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                showSampleOutput(
+                    button.dataset.command
+                );
+
+            }
+        );
+
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| INITIALIZE
+|--------------------------------------------------------------------------
+*/
+
+updateLinuxCommands();
+
+resetSimulation();
+
+requestAnimationFrame(tick);
+
+</script>
+
+</body>
+</html>
