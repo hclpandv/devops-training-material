@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AWS Networking from Zero</title>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--fg:#0f1724;--mut:#5b6678;--bd:#d5dce8;--acc:#0b6bcb;--ok:#1a7f37;--bad:#c62828;--pub:#e8f4ea;--priv:#eceff6;--nacl:#8e44ad;--sgc:#c25a0c;--aws:#ff9900;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1724;--card:#16202f;--fg:#e6eef6;--mut:#9aa4b2;--bd:#26344a;--acc:#4da3ff;--ok:#5fd16f;--bad:#ff6b6b;--pub:#10301f;--priv:#1a2233;--nacl:#c58bff;--sgc:#ffa05a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1724;--card:#16202f;--fg:#e6eef6;--mut:#9aa4b2;--bd:#26344a;--acc:#4da3ff;--ok:#5fd16f;--bad:#ff6b6b;--pub:#10301f;--priv:#1a2233;--nacl:#c58bff;--sgc:#ffa05a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+.wrap{max-width:1150px;margin:0 auto;padding:16px}
+h1{margin:0;font-size:24px}h1 span{color:var(--aws)}h2{margin:4px 0 8px;font-size:20px}.sub,.muted{color:var(--mut)}.small{font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+button{background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:6px 12px;cursor:pointer;font:inherit}button:disabled{opacity:.45;cursor:default}
+button.act{background:var(--acc);border-color:var(--acc);color:#fff}button.done{border-color:var(--ok)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.cols{display:grid;grid-template-columns:1fr 1.15fr;gap:14px;align-items:start}@media(max-width:860px){.cols{grid-template-columns:1fr}}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0}
+li{margin:3px 0}.an{background:var(--bg);border-left:4px solid var(--aws);padding:8px 12px;border-radius:0 8px 8px 0;margin:12px 0}
+pre{background:var(--bg);padding:10px;border-radius:8px;overflow:auto;font:12px ui-monospace,Menlo,Consolas,monospace;margin:6px 0 14px}code{font:12.5px ui-monospace,Menlo,Consolas,monospace}
+.quiz{margin:8px 0 14px}.opt{display:block;width:100%;text-align:left;margin:6px 0}.opt.right{border-color:var(--ok)}.opt.wrong{border-color:var(--bad)}.okc{color:var(--ok)}.badc{color:var(--bad)}
+.rl{display:block;margin:8px 0}.v{padding:10px 14px;border-radius:8px;font-weight:600;margin-top:10px;border:1px solid}.v.ok{border-color:var(--ok);color:var(--ok)}.v.bad{border-color:var(--bad);color:var(--bad)}
+select{background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:6px;font:inherit}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{border-bottom:1px solid var(--bd);padding:6px 10px;text-align:left}.scroll{overflow-x:auto}
+svg{width:100%;height:auto;display:block}svg text{fill:var(--fg);font-size:12px}svg .m{fill:var(--mut);font-size:10px}svg .b{font-weight:600;font-size:11.5px}svg .nl{fill:var(--nacl);font-size:10px;font-weight:600}svg .sgl{fill:var(--sgc);font-size:10px;font-weight:600}
+.reg{fill:none;stroke:var(--mut);stroke-dasharray:2 4}.vpc{fill:none;stroke:var(--acc);stroke-width:2}.az{fill:none;stroke:var(--bd);stroke-dasharray:6 4}.pub{fill:var(--pub);stroke:var(--ok)}.priv{fill:var(--priv);stroke:var(--mut)}
+.nacl{fill:none;stroke:var(--nacl);stroke-width:2;stroke-dasharray:5 3}.sg{fill:none;stroke:var(--sgc);stroke-width:2;stroke-dasharray:4 3}.ec2,.gw,.db{fill:var(--card);stroke:var(--acc);stroke-width:1.5}.db{stroke:var(--nacl)}
+.ar{fill:none;stroke:var(--acc);stroke-width:1.6}.mk{fill:var(--acc)}
+#dg [data-l]{opacity:0}#dg .on{opacity:1}#dg .new{filter:drop-shadow(0 0 5px var(--acc))}
+.lbar{fill:var(--bd)}.lbar.bad{fill:var(--bad)}.lane{fill:none;stroke:var(--mut);stroke-width:2;stroke-dasharray:6 5}
+.gi{fill:var(--card);stroke:var(--mut);stroke-width:2}.gi.ok{fill:var(--ok);stroke:var(--ok)}.gi.no{fill:var(--bad);stroke:var(--bad);transform-box:fill-box;transform-origin:center;animation:pl .5s 3}
+@keyframes pl{50%{transform:scale(1.5)}}
+.gt{fill:#fff;font-size:13px;font-weight:700}.why{fill:var(--bad);font-size:11px;font-weight:700}.fin{font-size:12px;font-weight:600}
+#dot{fill:var(--acc)}#dot.bad{fill:var(--bad)}
+</style></head>
+<body><div class="wrap">
+<h1>AWS Networking <span>from Zero</span></h1>
+<div class="sub">Build a VPC lesson by lesson. Each lesson adds a piece to the diagram. A simplified model for learning.</div>
+<div class="row" id="tabs"></div><div id="view"></div>
+</div>
+<script>
+const Y=`lessons:
+  - title: "Regions, Availability Zones and the VPC"
+    concept: "A Region is a geographic area such as eu-west-1 (Ireland). It contains several Availability Zones (AZs), which are separate data centres. A VPC is your own private, isolated network inside one Region, defined by a CIDR block."
+    points: ["Pick a Region for latency, cost and data residency", "A VPC spans all AZs of its Region", "10.0.0.0/16 gives you 65,536 private addresses"]
+    analogy: "Region = a city, AZ = a district with its own power supply, VPC = your fenced office campus."
+    cli: "aws ec2 create-vpc --cidr-block 10.0.0.0/16"
+    q: {ask: "What is the best protection against a data centre failure?", options: ["Run everything in one AZ", "Spread across two or more AZs", "Use a bigger instance"], answer: 1, why: "AZs fail independently, so spreading across them keeps you running."}
+  - title: "Subnets"
+    concept: "A subnet is a slice of the VPC address range that lives in exactly one AZ. Whether a subnet is public or private is decided by its route table, which comes next."
+    points: ["One subnet lives in one AZ", "Use at least two subnets per tier for high availability", "AWS reserves 5 addresses in every subnet"]
+    analogy: "Subnets are rooms inside a district."
+    cli: "aws ec2 create-subnet --vpc-id vpc-123 --cidr-block 10.0.1.0/24 --availability-zone eu-west-1a"
+    q: {ask: "Can one subnet span two AZs?", options: ["Yes", "No, one AZ only", "Only public subnets can"], answer: 1, why: "A subnet always belongs to a single AZ."}
+  - title: "Internet Gateway and route tables"
+    concept: "An Internet Gateway (IGW) connects the VPC to the internet. A route table decides where traffic goes. A subnet whose route table sends 0.0.0.0/0 to the IGW is public. A subnet with only the local route is private."
+    points: ["Every route table has an implicit local route", "The IGW itself is free and highly available", "A public IP and a route to the IGW are both needed"]
+    analogy: "Route table = road signs, IGW = the main gate."
+    cli: "aws ec2 create-route --route-table-id rtb-123 --destination-cidr-block 0.0.0.0/0 --gateway-id igw-123"
+    q: {ask: "What makes a subnet public?", options: ["Its name", "A route to an Internet Gateway", "A large CIDR block"], answer: 1, why: "Only the route table decides it."}
+  - title: "EC2 instances"
+    concept: "EC2 is a virtual server. You choose an AMI (the OS image), an instance type (CPU and RAM), a subnet, a key pair for login and EBS storage. It always gets a private IP, and a public IP only if you ask for one."
+    points: ["t3.micro is fine for learning, check the free tier", "EBS volumes persist, instance store does not", "You pay per second while an instance runs, so stop what you do not use"]
+    analogy: "AMI = a template, instance type = the hardware spec."
+    cli: "aws ec2 run-instances --image-id ami-123 --instance-type t3.micro --subnet-id subnet-pub-a --key-name my-key"
+    q: {ask: "The subnet has a route to the IGW but your instance is unreachable. What is missing?", options: ["A public IP and a security group that allows the traffic", "More RAM", "A second AZ"], answer: 0, why: "Internet access needs a public IP, a route and permission from the firewalls."}
+  - title: "Security groups"
+    concept: "A security group is a virtual firewall attached to an instance. It only has allow rules and is stateful: if a request is allowed in, the reply is automatically allowed out."
+    points: ["Default: all inbound denied, all outbound allowed", "A rule can reference another security group instead of an IP", "Changes apply immediately"]
+    analogy: "A bouncer with a guest list who remembers who he let in."
+    cli: "aws ec2 authorize-security-group-ingress --group-id sg-123 --protocol tcp --port 443 --cidr 0.0.0.0/0"
+    q: {ask: "What does stateful mean?", options: ["Replies to allowed requests are allowed automatically", "Rules are numbered", "It applies to a whole subnet"], answer: 0, why: "You never write a rule for the reply."}
+  - title: "Network ACLs"
+    concept: "A network ACL is a firewall at the subnet boundary. It is stateless and has numbered allow and deny rules, checked from the lowest number first, with a final deny. You must allow both the request and the reply, which uses ephemeral ports 1024-65535."
+    points: ["The default NACL allows everything, a new custom NACL denies everything", "Good for broad blocks such as a hostile IP range", "Open the Traffic lab tab and break the reply path yourself"]
+    analogy: "Border control that checks people on the way in and again on the way out."
+    cli: "aws ec2 create-network-acl-entry --network-acl-id acl-123 --ingress --rule-number 100 --protocol tcp --port-range From=443,To=443 --cidr-block 0.0.0.0/0 --rule-action allow"
+    q: {ask: "Which one can explicitly DENY a single IP address?", options: ["Security group", "Network ACL", "Route table"], answer: 1, why: "Security groups only allow. NACLs support deny rules."}
+  - title: "NAT Gateway"
+    concept: "Private instances have no public IP but often need outbound internet for updates and APIs. A NAT Gateway sits in a public subnet, and the private route table sends 0.0.0.0/0 to it. Outbound works, unsolicited inbound does not."
+    points: ["It needs an Elastic IP", "Billed per hour plus per GB, a common surprise cost", "Use one per AZ for resilience"]
+    analogy: "A company switchboard: staff can call out, outsiders cannot dial a desk directly."
+    cli: "aws ec2 create-nat-gateway --subnet-id subnet-pub-a --allocation-id eipalloc-123"
+    q: {ask: "Where do you place a NAT Gateway?", options: ["In a private subnet", "In a public subnet", "Outside the VPC"], answer: 1, why: "It needs a route to the IGW itself."}
+  - title: "Putting it together: three tiers"
+    concept: "Users reach an Application Load Balancer in the public subnets. It forwards to app servers in private subnets, which talk to a database (RDS) in private subnets. Each tier trusts only the tier in front of it, using security group references."
+    points: ["ALB security group: 443 from the internet", "App security group: 8080 from the ALB security group only", "Database security group: 5432 from the app security group only"]
+    analogy: "Reception, offices, vault."
+    cli: "aws elbv2 create-load-balancer --name web-alb --subnets subnet-pub-a subnet-pub-b --security-groups sg-alb"
+    q: {ask: "Who should the database security group allow?", options: ["The whole internet", "The app tier security group", "Every address in the VPC"], answer: 1, why: "Least privilege: only the tier that needs the database."}
+`;
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const L=jsyaml.load(Y).lessons;let cur=0,tab='learn',ans={};
+
+const R=(l,x,y,w,h,c,m)=>`<rect data-l="${l}"${m?` data-m="${m}"`:''} class="${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"/>`;
+const T=(l,x,y,s,c='',a='start',m)=>`<text data-l="${l}"${m?` data-m="${m}"`:''} class="${c}" x="${x}" y="${y}" text-anchor="${a}">${s}</text>`;
+const A=(l,d)=>`<path data-l="${l}" class="ar" d="${d}" marker-end="url(#h)"/>`;
+function diagram(){let s=`<svg viewBox="0 0 760 410" role="img" aria-label="AWS VPC diagram that grows with each lesson"><defs><marker id="h" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="mk" d="M0 0L8 4L0 8z"/></marker></defs>`;
+ s+=R(1,5,40,750,368,'reg')+T(1,15,56,'Region (e.g. eu-west-1)','m')+R(1,20,70,720,330,'vpc')+T(1,32,88,'VPC 10.0.0.0/16','b');
+ s+=R(1,35,95,340,295,'az')+R(1,395,95,330,295,'az')+T(1,45,384,'Availability Zone A','m')+T(1,405,384,'Availability Zone B','m');
+ [[50,115,310,'Public 10.0.1.0/24','pub'],[410,115,300,'Public 10.0.2.0/24','pub'],[50,265,310,'Private 10.0.11.0/24','priv'],[410,265,300,'Private 10.0.12.0/24','priv']].forEach(([x,y,w,n,k])=>{
+  s+=R(2,x,y,w,110,k)+T(2,x+10,y+18,n,'b')+R(6,x-3,y-3,w+6,116,'nacl')+T(6,x+10,y+104,'NACL','nl');
+  s+=k==='pub'?T(3,x+w-8,y+104,'RT: 0.0.0.0/0 → IGW','m','end'):T(3,x+w-8,y+104,'RT: local only','m','end',6)+T(7,x+w-8,y+104,'RT: 0.0.0.0/0 → NAT','m','end')});
+ s+=R(3,330,8,100,26,'gw')+T(3,380,25,'Internet','','middle')+A(3,'M380 34V58')+R(3,340,59,80,22,'gw')+T(3,380,74,'IGW','','middle');
+ s+=R(4,70,160,100,40,'ec2')+T(4,120,177,'EC2 web','','middle')+T(4,120,192,'+ EBS volume','m','middle');
+ s+=R(5,62,152,116,56,'sg')+T(5,62,148,'Security Group','sgl');
+ s+=R(7,200,160,100,40,'ec2')+T(7,250,184,'NAT Gateway','','middle')+R(7,70,300,100,40,'ec2')+T(7,120,324,'EC2 app','','middle')+A(7,'M170 312H250V202')+A(7,'M250 160V104H350V83');
+ s+=R(8,330,236,100,22,'gw')+T(8,380,251,'ALB','','middle')+A(8,'M380 83V234')+A(8,'M330 247H120V298')+R(8,450,300,100,40,'db')+T(8,500,324,'RDS database','','middle')+A(8,'M170 334H448');
+ return s+'</svg>'}
+const DG=diagram();
+function paint(){document.querySelectorAll('#dg [data-l]').forEach(e=>{const l=+e.dataset.l,m=+(e.dataset.m||99),n=cur+1;e.classList.toggle('on',n>=l&&n<=m);e.classList.toggle('new',l===n)})}
+
+function quiz(l){const q=l.q,a=ans[cur],d=a!==undefined;
+ return `<div class="quiz"><b>Check yourself:</b> ${esc(q.ask)}${q.options.map((o,i)=>`<button class="opt ${d?(i===q.answer?'right':(i===a.pick?'wrong':'')):''}" data-o="${i}" ${d?'disabled':''}>${esc(o)}</button>`).join('')}${d?`<div class="small ${a.pick===q.answer?'okc':'badc'}">${a.pick===q.answer?'Correct. ':'Not quite. '}${esc(q.why)}</div>`:''}</div>`}
+function learn(){const l=L[cur];
+ return `<div class="row">${L.map((x,i)=>`<button class="${i===cur?'act':''} ${ans[i]&&ans[i].pick===x.q.answer?'done':''}" data-i="${i}" aria-label="Lesson ${i+1}">${i+1}</button>`).join('')}</div>
+ <div class="cols"><div class="card"><div class="muted small">Lesson ${cur+1} of ${L.length}</div><h2>${esc(l.title)}</h2><p>${esc(l.concept)}</p><ul>${l.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ul><div class="an">${esc(l.analogy)}</div><b>Try it with the AWS CLI</b><pre>${esc(l.cli)}</pre>${quiz(l)}
+ <div class="row"><button data-n="-1" ${cur?'':'disabled'}>← Back</button><button class="act" data-n="1" ${cur<L.length-1?'':'disabled'}>Next →</button></div></div><div class="card" id="dg">${DG}</div></div>${cur===5?sf():''}`}
+
+const lab={port:80,src:'198.51.100.7',sg:[{p:80,c:'0.0.0.0/0'},{p:443,c:'0.0.0.0/0'},{p:22,c:'203.0.113.10/32'}],
+ ni:[{n:100,a:'allow',p:'80',c:'0.0.0.0/0'},{n:110,a:'allow',p:'443',c:'0.0.0.0/0'},{n:120,a:'deny',p:'22',c:'0.0.0.0/0'},{n:130,a:'allow',p:'22',c:'203.0.113.10/32'}],no:[{n:100,a:'allow',p:'1024-65535',c:'0.0.0.0/0'}]};
+lab.net=[{t:'Internet gateway attached to the VPC'},{t:'Instance has a public IP'},{t:'Route table: 0.0.0.0/0 → internet gateway'}];
+[...lab.sg,...lab.ni,...lab.no,...lab.net].forEach(r=>r.on=true);
+const ip=s=>s.split('.').reduce((a,b)=>a*256+ +b,0),inC=(i,c)=>{const[b,m]=c.split('/'),sh=2**(32-m);return Math.floor(ip(i)/sh)===Math.floor(ip(b)/sh)};
+const pm=(p,r)=>r.includes('-')?(p>=+r.split('-')[0]&&p<=+r.split('-')[1]):+r===p;
+function nacl(rules,port,addr){for(const r of rules.filter(r=>r.on).sort((a,b)=>a.n-b.n))if(pm(port,r.p)&&inC(addr,r.c))return{ok:r.a==='allow',why:`rule ${r.n} ${r.a.toUpperCase()}`};return{ok:false,why:'no rule matches, so the final * DENY applies'}}
+function sim(){const s=[],n=lab.net,ig=n[0].on&&n[1].on;
+ s.push([ig,'Internet gateway',ig?'attached to the VPC, and the instance has a public IP to map the request to':(!n[0].on?'no internet gateway is attached to the VPC':'the instance has no public IP, so the gateway cannot deliver to it')]);if(!ig)return s;
+ const a=nacl(lab.ni,lab.port,lab.src);s.push([a.ok,'Inbound NACL (subnet)',a.why]);if(!a.ok)return s;
+ const g=lab.sg.find(r=>r.on&&r.p===lab.port&&inC(lab.src,r.c));s.push([!!g,'Security group (instance)',g?`allowed by ${g.p} from ${g.c}`:'no allow rule matches, implicit deny']);if(!g)return s;
+ s.push([true,'EC2 receives the request','the application answers']);s.push([true,'Reply leaves the security group','stateful: automatically allowed']);
+ const o=nacl(lab.no,50000,lab.src);s.push([o.ok,'Outbound NACL (subnet)',o.ok?o.why+' (reply to ephemeral port 50000)':'the reply to ephemeral port 50000 is not allowed. NACLs are stateless, so the client never gets an answer']);if(!o.ok)return s;
+ s.push([n[2].on,'Route table',n[2].on?'0.0.0.0/0 points to the internet gateway, so the reply is sent out':'no route to the internet gateway, so the reply has nowhere to go']);if(!n[2].on)return s;
+ s.push([true,'Internet gateway (reply)','the reply reaches the client']);return s}
+const GATES=[[95,100],[280,100],[450,100],[630,100],[450,190],[280,190],[190,190],[95,190]];
+function flowSvg(){const c=i=>`<circle id="g${i}" class="gi" cx="${GATES[i][0]}" cy="${GATES[i][1]}" r="12"/><text id="t${i}" class="gt" x="${GATES[i][0]}" y="${GATES[i][1]+5}" text-anchor="middle"></text>`,bar=(i,x,y=62,h=168)=>`<rect id="b${i}" class="lbar" x="${x}" y="${y}" width="20" height="${h}" rx="5"/>`,lb=(x,a,b,k)=>`<text class="${k}" x="${x}" y="248" text-anchor="middle">${a}</text><text class="m" x="${x}" y="262" text-anchor="middle">${b}</text>`;
+ return `<svg id="flow" viewBox="0 0 760 270" role="img" aria-label="Animated path of a request and its reply through the internet gateway, route table, network ACL and security group"><defs><marker id="h2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="mk" d="M0 0L8 4L0 8z"/></marker></defs>
+ <rect class="vpc" x="85" y="30" width="665" height="208" rx="10"/><text class="m" x="745" y="45" text-anchor="end">VPC</text>
+ <rect class="ec2" x="2" y="70" width="66" height="150" rx="8"/><text class="b" x="35" y="146" text-anchor="middle">Client</text><text class="m" x="35" y="162" text-anchor="middle">${esc(lab.src)}</text>
+ <rect class="pub" x="250" y="50" width="498" height="180" rx="10"/><text class="m" x="742" y="66" text-anchor="end">Public subnet</text>
+ <rect class="ec2" x="600" y="70" width="140" height="150" rx="8"/><text class="b" x="670" y="150" text-anchor="middle">EC2 web server</text>
+ <path class="lane" d="M68 100H630V190H68" marker-end="url(#h2)"/>
+ <text class="m" x="365" y="92" text-anchor="middle">request: port ${lab.port}</text><text class="m" x="365" y="182" text-anchor="middle">reply: port 50000</text>
+ ${bar(0,85)}${bar(1,270)}${bar(2,440)}${bar(3,180,150,80)}
+ ${[0,1,2,3,4,5,6,7].map(c).join('')}
+ ${lb(95,'IGW','front door','b')}${lb(190,'Route table','next hop','b')}${lb(280,'Network ACL','stateless','nl')}${lb(450,'Security group','stateful','sgl')}
+ <text id="why" class="why" text-anchor="middle"></text><text id="fin" class="fin" x="4" y="238"></text><circle id="dot" r="7" cx="68" cy="100"/></svg>`}
+function mark(i,ok){const g=$('#g'+i);if(!g)return;g.classList.add(ok?'ok':'no');$('#t'+i).textContent=ok?'✓':'✕';const bi=[0,1,2,null,null,1,3,0][i];if(!ok&&bi!==null){const b=$('#b'+bi);if(b)b.classList.add('bad')}}
+function fin(ok,i){const f=$('#fin');if(!f)return;f.textContent=ok?'Reply received ✓':'No response';f.style.fill=ok?'var(--ok)':'var(--bad)';
+ if(!ok){const w=$('#why'),m={0:['no entry',95,128],1:['blocked by NACL',280,128],2:['no SG rule',450,128],5:['reply dropped',280,216],6:['no route out',190,216]}[i];if(m){w.textContent=m[0];w.setAttribute('x',m[1]);w.setAttribute('y',m[2])}}}
+let anim=0;
+function play(){const id=++anim,st=sim(),dot=$('#dot');if(!dot)return;
+ const rm=matchMedia('(prefers-reduced-motion: reduce)').matches,V=rm?9000:300,P=rm?0:220,route=[];
+ st.forEach((s,i)=>{if(i===4)route.push({x:630,y:190});route.push({x:GATES[i][0],y:GATES[i][1],i,ok:s[0]})});
+ if(st.length===8&&st[7][0])route.push({x:68,y:190,end:1});
+ let x=68,y=100,k=0;
+ const go=()=>{if(id!==anim||!$('#dot'))return;const t=route[k];if(!t)return;const x0=x,y0=y,dur=Math.hypot(t.x-x0,t.y-y0)/V*1000,t0=performance.now();
+  const step=now=>{if(id!==anim||!$('#dot'))return;const u=dur?Math.min((now-t0)/dur,1):1;x=x0+(t.x-x0)*u;y=y0+(t.y-y0)*u;dot.setAttribute('cx',x);dot.setAttribute('cy',y);
+   if(u<1)return requestAnimationFrame(step);
+   if(t.i!==undefined){mark(t.i,t.ok);if(!t.ok){dot.classList.add('bad');fin(false,t.i);return}}
+   if(t.end){fin(true);return}k++;setTimeout(go,P)};requestAnimationFrame(step)};
+ go()}
+const netCard=()=>`<div class="card"><b>Network wiring</b>${lab.net.map((x,i)=>`<label class="rl"><input type="checkbox" data-r="net" data-k="${i}" ${x.on?'checked':''}> ${esc(x.t)}</label>`).join('')}</div>`;
+const sf=()=>`<div class="three" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"><div class="card" style="border-top:4px solid var(--sgc)"><b>Stateful (security group)</b><p>It remembers each connection. Allow the request in and the reply is let out automatically.</p><p class="muted small">Example: allow inbound 443 and you are done. The bouncer remembers who he let in. 1 rule.</p></div><div class="card" style="border-top:4px solid var(--nacl)"><b>Stateless (network ACL)</b><p>It remembers nothing. Every packet is checked on its own, in each direction.</p><p class="muted small">Example: allow inbound 443 and also allow outbound 1024-65535 for the reply. Border control checks you in and out separately. 2 rules.</p></div></div>`;
+function labView(){const st=sim(),ok=st.every(x=>x[0]),bad=st.find(x=>!x[0]);
+ const tbl=(k,t,rows)=>`<div class="card"><b>${t}</b>${rows.map((x,i)=>`<label class="rl"><input type="checkbox" data-r="${k}" data-k="${i}" ${x.on?'checked':''}> <code>${x.n?x.n+' '+x.a.toUpperCase()+' ':'ALLOW '}${x.p} ${k==='no'?'to':'from'} ${x.c}</code></label>`).join('')}</div>`;
+ return `<div class="card"><h2>Traffic lab</h2><p class="muted">Send a request to the EC2 web server in the public subnet. Untick rules and wiring options to see where traffic stops. Wiring covers the internet gateway, the public IP and the route table. Try: turn off the outbound NACL rule, or untick NACL rule 120 so the laptop can SSH.</p>
+ <div class="row"><label>Port <select id="lp">${[80,443,22,3389,8080].map(p=>`<option ${p===lab.port?'selected':''}>${p}</option>`).join('')}</select></label>
+ <label>From <select id="ls">${[['198.51.100.7','random internet user 198.51.100.7'],['203.0.113.10','my laptop 203.0.113.10']].map(o=>`<option value="${o[0]}" ${o[0]===lab.src?'selected':''}>${o[1]}</option>`).join('')}</select></label></div>
+ ${flowSvg()}<div class="row"><button data-play="1">▶ Send again</button></div><ol>${st.map(x=>`<li>${x[0]?'✅':'❌'} <b>${x[1]}</b>: ${esc(x[2])}</li>`).join('')}</ol>
+ <div class="v ${ok?'ok':'bad'}">${ok?'Connection works':'Blocked at: '+bad[1]}</div></div>
+ <div class="three">${tbl('ni','NACL inbound',lab.ni)}${tbl('no','NACL outbound',lab.no)}${tbl('sg','Security group inbound',lab.sg)}${netCard()}</div>
+ <div class="card scroll"><b>Security group vs NACL</b><table><tr><th></th><th>Security group</th><th>Network ACL</th></tr><tr><td>Applies to</td><td>Instance (network interface)</td><td>Whole subnet</td></tr><tr><td>State</td><td>Stateful</td><td>Stateless</td></tr><tr><td>Rule types</td><td>Allow only</td><td>Allow and deny</td></tr><tr><td>Evaluation</td><td>All rules together</td><td>Lowest number first, first match wins</td></tr><tr><td>Default</td><td>Deny inbound, allow outbound</td><td>Default NACL allows all</td></tr></table></div>`}
+
+function render(){$('#tabs').innerHTML=[['learn','Learn'],['lab','Traffic lab']].map(t=>`<button class="${t[0]===tab?'act':''}" data-t="${t[0]}">${t[1]}</button>`).join('');
+ $('#view').innerHTML=tab==='learn'?learn():labView();if(tab==='learn')paint();else play()}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+ if(d.t!==undefined)tab=d.t;else if(d.i!==undefined)cur=+d.i;else if(d.n!==undefined)cur+=+d.n;else if(d.o!==undefined)ans[cur]={pick:+d.o};else if(d.play===undefined)return;render()});
+document.addEventListener('change',e=>{const t=e.target;if(t.id==='lp')lab.port=+t.value;else if(t.id==='ls')lab.src=t.value;else if(t.dataset.r)lab[t.dataset.r][+t.dataset.k].on=t.checked;else return;render()});
+render();
+</script></body></html>
