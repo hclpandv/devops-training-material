@@ -9,13 +9,13 @@
 :root[data-theme="dark"]{--bg:#0f1724;--card:#16202f;--fg:#e6eef6;--mut:#9aa4b2;--bd:#26344a;--acc:#4da3ff;--ok:#5fd16f;--bad:#ff6b6b;--pub:#10301f;--priv:#1a2233;--nacl:#c58bff;--sgc:#ffa05a;color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
-.wrap{max-width:1150px;margin:0 auto;padding:16px}
+.wrap{max-width:1400px;margin:0 auto;padding:16px}
 h1{margin:0;font-size:24px}h1 span{color:var(--aws)}h2{margin:4px 0 8px;font-size:20px}.sub,.muted{color:var(--mut)}.small{font-size:13px}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
 button{background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:6px 12px;cursor:pointer;font:inherit}button:disabled{opacity:.45;cursor:default}
 button.act{background:var(--acc);border-color:var(--acc);color:#fff}button.done{border-color:var(--ok)}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}
-.cols{display:grid;grid-template-columns:1fr 1.15fr;gap:14px;align-items:start}@media(max-width:860px){.cols{grid-template-columns:1fr}}
+.cols{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:14px;align-items:start}@media(max-width:860px){.cols{grid-template-columns:1fr}}
 .three{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0}
 li{margin:3px 0}.an{background:var(--bg);border-left:4px solid var(--aws);padding:8px 12px;border-radius:0 8px 8px 0;margin:12px 0}
 pre{background:var(--bg);padding:10px;border-radius:8px;overflow:auto;font:12px ui-monospace,Menlo,Consolas,monospace;margin:6px 0 14px}code{font:12.5px ui-monospace,Menlo,Consolas,monospace}
@@ -27,17 +27,22 @@ svg{width:100%;height:auto;display:block}svg text{fill:var(--fg);font-size:12px}
 .reg{fill:none;stroke:var(--mut);stroke-dasharray:2 4}.vpc{fill:none;stroke:var(--acc);stroke-width:2}.az{fill:none;stroke:var(--bd);stroke-dasharray:6 4}.pub{fill:var(--pub);stroke:var(--ok)}.priv{fill:var(--priv);stroke:var(--mut)}
 .nacl{fill:none;stroke:var(--nacl);stroke-width:2;stroke-dasharray:5 3}.sg{fill:none;stroke:var(--sgc);stroke-width:2;stroke-dasharray:4 3}.ec2,.gw,.db{fill:var(--card);stroke:var(--acc);stroke-width:1.5}.db{stroke:var(--nacl)}
 .ar{fill:none;stroke:var(--acc);stroke-width:1.6}.mk{fill:var(--acc)}
-#dg [data-l]{opacity:0}#dg .on{opacity:1}#dg .new{filter:drop-shadow(0 0 5px var(--acc))}
+.dgw [data-l]{opacity:0}.dgw .on{opacity:1}.dgw .new{filter:drop-shadow(0 0 5px var(--acc))}
 .lbar{fill:var(--bd)}.lbar.bad{fill:var(--bad)}.lane{fill:none;stroke:var(--mut);stroke-width:2;stroke-dasharray:6 5}
 .gi{fill:var(--card);stroke:var(--mut);stroke-width:2}.gi.ok{fill:var(--ok);stroke:var(--ok)}.gi.no{fill:var(--bad);stroke:var(--bad);transform-box:fill-box;transform-origin:center;animation:pl .5s 3}
 @keyframes pl{50%{transform:scale(1.5)}}
 .gt{fill:#fff;font-size:13px;font-weight:700}.why{fill:var(--bad);font-size:11px;font-weight:700}.fin{font-size:12px;font-weight:600}
 #dot{fill:var(--acc)}#dot.bad{fill:var(--bad)}
+#dg svg,#flow{cursor:zoom-in}.hint{font-size:12px;color:var(--mut);margin-top:6px}
+#zoom{width:min(1400px,98vw);max-height:96vh;padding:12px;background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:12px}#zoom::backdrop{background:rgba(0,0,0,.7)}#zoom svg{width:100%;height:auto;max-height:82vh}.zx{float:right;margin-bottom:8px}
+.dgw svg text{font-size:13px}.dgw svg .m,.dgw svg .nl,.dgw svg .sgl{font-size:12px}.dgw svg .b{font-size:13px}
+@media(min-width:861px){#dg{position:sticky;top:12px}.cols.wide #dg{position:static}}.cols.wide{grid-template-columns:1fr}.cols.wide #dg{order:-1}#dg svg{max-height:78vh}.cols.wide>.card:not(#dg){max-width:980px}
 </style></head>
 <body><div class="wrap">
 <h1>AWS Networking <span>from Zero</span></h1>
 <div class="sub">Build a VPC lesson by lesson. Each lesson adds a piece to the diagram. A simplified model for learning.</div>
 <div class="row" id="tabs"></div><div id="view"></div>
+<dialog id="zoom"><button class="zx" id="zc">Close ✕</button><div id="zb" class="dgw"></div></dialog>
 </div>
 <script>
 const Y=`lessons:
@@ -91,14 +96,14 @@ const Y=`lessons:
     q: {ask: "Who should the database security group allow?", options: ["The whole internet", "The app tier security group", "Every address in the VPC"], answer: 1, why: "Least privilege: only the tier that needs the database."}
 `;
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const L=jsyaml.load(Y).lessons;let cur=0,tab='learn',ans={};
+const L=jsyaml.load(Y).lessons;let cur=0,tab='learn',ans={},wide=false;
 
 const R=(l,x,y,w,h,c,m)=>`<rect data-l="${l}"${m?` data-m="${m}"`:''} class="${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"/>`;
 const T=(l,x,y,s,c='',a='start',m)=>`<text data-l="${l}"${m?` data-m="${m}"`:''} class="${c}" x="${x}" y="${y}" text-anchor="${a}">${s}</text>`;
 const A=(l,d)=>`<path data-l="${l}" class="ar" d="${d}" marker-end="url(#h)"/>`;
 function diagram(){let s=`<svg viewBox="0 0 760 410" role="img" aria-label="AWS VPC diagram that grows with each lesson"><defs><marker id="h" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="mk" d="M0 0L8 4L0 8z"/></marker></defs>`;
  s+=R(1,5,40,750,368,'reg')+T(1,15,56,'Region (e.g. eu-west-1)','m')+R(1,20,70,720,330,'vpc')+T(1,32,88,'VPC 10.0.0.0/16','b');
- s+=R(1,35,95,340,295,'az')+R(1,395,95,330,295,'az')+T(1,45,384,'Availability Zone A','m')+T(1,405,384,'Availability Zone B','m');
+ s+=R(1,35,95,340,300,'az')+R(1,395,95,330,300,'az')+T(1,45,389,'Availability Zone A','m')+T(1,405,389,'Availability Zone B','m');
  [[50,115,310,'Public 10.0.1.0/24','pub'],[410,115,300,'Public 10.0.2.0/24','pub'],[50,265,310,'Private 10.0.11.0/24','priv'],[410,265,300,'Private 10.0.12.0/24','priv']].forEach(([x,y,w,n,k])=>{
   s+=R(2,x,y,w,110,k)+T(2,x+10,y+18,n,'b')+R(6,x-3,y-3,w+6,116,'nacl')+T(6,x+10,y+104,'NACL','nl');
   s+=k==='pub'?T(3,x+w-8,y+104,'RT: 0.0.0.0/0 → IGW','m','end'):T(3,x+w-8,y+104,'RT: local only','m','end',6)+T(7,x+w-8,y+104,'RT: 0.0.0.0/0 → NAT','m','end')});
@@ -115,8 +120,8 @@ function quiz(l){const q=l.q,a=ans[cur],d=a!==undefined;
  return `<div class="quiz"><b>Check yourself:</b> ${esc(q.ask)}${q.options.map((o,i)=>`<button class="opt ${d?(i===q.answer?'right':(i===a.pick?'wrong':'')):''}" data-o="${i}" ${d?'disabled':''}>${esc(o)}</button>`).join('')}${d?`<div class="small ${a.pick===q.answer?'okc':'badc'}">${a.pick===q.answer?'Correct. ':'Not quite. '}${esc(q.why)}</div>`:''}</div>`}
 function learn(){const l=L[cur];
  return `<div class="row">${L.map((x,i)=>`<button class="${i===cur?'act':''} ${ans[i]&&ans[i].pick===x.q.answer?'done':''}" data-i="${i}" aria-label="Lesson ${i+1}">${i+1}</button>`).join('')}</div>
- <div class="cols"><div class="card"><div class="muted small">Lesson ${cur+1} of ${L.length}</div><h2>${esc(l.title)}</h2><p>${esc(l.concept)}</p><ul>${l.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ul><div class="an">${esc(l.analogy)}</div><b>Try it with the AWS CLI</b><pre>${esc(l.cli)}</pre>${quiz(l)}
- <div class="row"><button data-n="-1" ${cur?'':'disabled'}>← Back</button><button class="act" data-n="1" ${cur<L.length-1?'':'disabled'}>Next →</button></div></div><div class="card" id="dg">${DG}</div></div>${cur===5?sf():''}`}
+ <div class="cols${wide?' wide':''}"><div class="card"><div class="muted small">Lesson ${cur+1} of ${L.length}</div><h2>${esc(l.title)}</h2><p>${esc(l.concept)}</p><ul>${l.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ul><div class="an">${esc(l.analogy)}</div><b>Try it with the AWS CLI</b><pre>${esc(l.cli)}</pre>${quiz(l)}
+ <div class="row"><button data-n="-1" ${cur?'':'disabled'}>← Back</button><button class="act" data-n="1" ${cur<L.length-1?'':'disabled'}>Next →</button></div></div><div class="card dgw" id="dg">${DG}<div class="hint">Click the diagram to enlarge. <button data-w="1">${wide?'Side by side':'Wide view'}</button></div></div></div>${cur===5?sf():''}`}
 
 const lab={port:80,src:'198.51.100.7',sg:[{p:80,c:'0.0.0.0/0'},{p:443,c:'0.0.0.0/0'},{p:22,c:'203.0.113.10/32'}],
  ni:[{n:100,a:'allow',p:'80',c:'0.0.0.0/0'},{n:110,a:'allow',p:'443',c:'0.0.0.0/0'},{n:120,a:'deny',p:'22',c:'0.0.0.0/0'},{n:130,a:'allow',p:'22',c:'203.0.113.10/32'}],no:[{n:100,a:'allow',p:'1024-65535',c:'0.0.0.0/0'}]};
@@ -168,7 +173,7 @@ function labView(){const st=sim(),ok=st.every(x=>x[0]),bad=st.find(x=>!x[0]);
  return `<div class="card"><h2>Traffic lab</h2><p class="muted">Send a request to the EC2 web server in the public subnet. Untick rules and wiring options to see where traffic stops. Wiring covers the internet gateway, the public IP and the route table. Try: turn off the outbound NACL rule, or untick NACL rule 120 so the laptop can SSH.</p>
  <div class="row"><label>Port <select id="lp">${[80,443,22,3389,8080].map(p=>`<option ${p===lab.port?'selected':''}>${p}</option>`).join('')}</select></label>
  <label>From <select id="ls">${[['198.51.100.7','random internet user 198.51.100.7'],['203.0.113.10','my laptop 203.0.113.10']].map(o=>`<option value="${o[0]}" ${o[0]===lab.src?'selected':''}>${o[1]}</option>`).join('')}</select></label></div>
- ${flowSvg()}<div class="row"><button data-play="1">▶ Send again</button></div><ol>${st.map(x=>`<li>${x[0]?'✅':'❌'} <b>${x[1]}</b>: ${esc(x[2])}</li>`).join('')}</ol>
+ ${flowSvg()}<div class="row"><button data-play="1">▶ Send again</button><span class="hint">Click the diagram to enlarge</span></div><ol>${st.map(x=>`<li>${x[0]?'✅':'❌'} <b>${x[1]}</b>: ${esc(x[2])}</li>`).join('')}</ol>
  <div class="v ${ok?'ok':'bad'}">${ok?'Connection works':'Blocked at: '+bad[1]}</div></div>
  <div class="three">${tbl('ni','NACL inbound',lab.ni)}${tbl('no','NACL outbound',lab.no)}${tbl('sg','Security group inbound',lab.sg)}${netCard()}</div>
  <div class="card scroll"><b>Security group vs NACL</b><table><tr><th></th><th>Security group</th><th>Network ACL</th></tr><tr><td>Applies to</td><td>Instance (network interface)</td><td>Whole subnet</td></tr><tr><td>State</td><td>Stateful</td><td>Stateless</td></tr><tr><td>Rule types</td><td>Allow only</td><td>Allow and deny</td></tr><tr><td>Evaluation</td><td>All rules together</td><td>Lowest number first, first match wins</td></tr><tr><td>Default</td><td>Deny inbound, allow outbound</td><td>Default NACL allows all</td></tr></table></div>`}
@@ -176,7 +181,8 @@ function labView(){const st=sim(),ok=st.every(x=>x[0]),bad=st.find(x=>!x[0]);
 function render(){$('#tabs').innerHTML=[['learn','Learn'],['lab','Traffic lab']].map(t=>`<button class="${t[0]===tab?'act':''}" data-t="${t[0]}">${t[1]}</button>`).join('');
  $('#view').innerHTML=tab==='learn'?learn():labView();if(tab==='learn')paint();else play()}
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
- if(d.t!==undefined)tab=d.t;else if(d.i!==undefined)cur=+d.i;else if(d.n!==undefined)cur+=+d.n;else if(d.o!==undefined)ans[cur]={pick:+d.o};else if(d.play===undefined)return;render()});
+ if(d.t!==undefined)tab=d.t;else if(d.i!==undefined)cur=+d.i;else if(d.n!==undefined)cur+=+d.n;else if(d.o!==undefined)ans[cur]={pick:+d.o};else if(d.w!==undefined)wide=!wide;else if(d.play===undefined)return;render()});
 document.addEventListener('change',e=>{const t=e.target;if(t.id==='lp')lab.port=+t.value;else if(t.id==='ls')lab.src=t.value;else if(t.dataset.r)lab[t.dataset.r][+t.dataset.k].on=t.checked;else return;render()});
+document.addEventListener('click',e=>{const s=e.target.closest('#dg svg,#flow');if(s){$('#zb').replaceChildren(s.cloneNode(true));$('#zoom').showModal()}else if(e.target.id==='zc'||e.target.id==='zoom')$('#zoom').close()});
 render();
 </script></body></html>
