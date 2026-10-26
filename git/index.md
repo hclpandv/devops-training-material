@@ -6,4 +6,5 @@
 
 [Installation](install.md)  
 [git command cheatsheet](cmd-cheatsheet.md)  
+[git toturial](git-tutorial.html)  
 
