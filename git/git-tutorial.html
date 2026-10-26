@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Git from Zero</title>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--fg:#0f1724;--mut:#5b6678;--bd:#d5dce8;--acc:#0b6bcb;--ok:#1a7f37;--bad:#c62828;--pub:#e8f4ea;--priv:#eceff6;--nacl:#8e44ad;--sgc:#c25a0c;--aws:#ff9900;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1724;--card:#16202f;--fg:#e6eef6;--mut:#9aa4b2;--bd:#26344a;--acc:#4da3ff;--ok:#5fd16f;--bad:#ff6b6b;--pub:#10301f;--priv:#1a2233;--nacl:#c58bff;--sgc:#ffa05a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1724;--card:#16202f;--fg:#e6eef6;--mut:#9aa4b2;--bd:#26344a;--acc:#4da3ff;--ok:#5fd16f;--bad:#ff6b6b;--pub:#10301f;--priv:#1a2233;--nacl:#c58bff;--sgc:#ffa05a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+.wrap{max-width:1400px;margin:0 auto;padding:16px}
+h1{margin:0;font-size:24px}h1 span{color:var(--aws)}h2{margin:4px 0 8px;font-size:20px}.sub,.muted{color:var(--mut)}.small{font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+button{background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:6px 12px;cursor:pointer;font:inherit}button:disabled{opacity:.45;cursor:default}
+button.act{background:var(--acc);border-color:var(--acc);color:#fff}button.done{border-color:var(--ok)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.cols{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:14px;align-items:start}@media(max-width:860px){.cols{grid-template-columns:1fr}}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0}
+li{margin:3px 0}.an{background:var(--bg);border-left:4px solid var(--aws);padding:8px 12px;border-radius:0 8px 8px 0;margin:12px 0}
+pre{background:var(--bg);padding:10px;border-radius:8px;overflow:auto;font:12px ui-monospace,Menlo,Consolas,monospace;margin:6px 0 14px}code{font:12.5px ui-monospace,Menlo,Consolas,monospace}
+.quiz{margin:8px 0 14px}.opt{display:block;width:100%;text-align:left;margin:6px 0}.opt.right{border-color:var(--ok)}.opt.wrong{border-color:var(--bad)}.okc{color:var(--ok)}.badc{color:var(--bad)}
+.rl{display:block;margin:8px 0}.v{padding:10px 14px;border-radius:8px;font-weight:600;margin-top:10px;border:1px solid}.v.ok{border-color:var(--ok);color:var(--ok)}.v.bad{border-color:var(--bad);color:var(--bad)}
+select{background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:6px;font:inherit}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{border-bottom:1px solid var(--bd);padding:6px 10px;text-align:left}.scroll{overflow-x:auto}
+svg{width:100%;height:auto;display:block}svg text{fill:var(--fg);font-size:12px}svg .m{fill:var(--mut);font-size:10px}svg .b{font-weight:600;font-size:11.5px}svg .nl{fill:var(--nacl);font-size:10px;font-weight:600}svg .sgl{fill:var(--sgc);font-size:10px;font-weight:600}
+.reg{fill:none;stroke:var(--mut);stroke-dasharray:2 4}.vpc{fill:none;stroke:var(--acc);stroke-width:2}.az{fill:none;stroke:var(--bd);stroke-dasharray:6 4}.pub{fill:var(--pub);stroke:var(--ok)}.priv{fill:var(--priv);stroke:var(--mut)}
+.nacl{fill:none;stroke:var(--nacl);stroke-width:2;stroke-dasharray:5 3}.sg{fill:none;stroke:var(--sgc);stroke-width:2;stroke-dasharray:4 3}.ec2,.gw,.db{fill:var(--card);stroke:var(--acc);stroke-width:1.5}.db{stroke:var(--nacl)}
+.ar{fill:none;stroke:var(--acc);stroke-width:1.6}.mk{fill:var(--acc)}
+.dgw [data-l]{opacity:0}.dgw .on{opacity:1}.dgw .new{filter:drop-shadow(0 0 5px var(--acc))}
+.lbar{fill:var(--bd)}.lbar.bad{fill:var(--bad)}.lane{fill:none;stroke:var(--mut);stroke-width:2;stroke-dasharray:6 5}
+.gi{fill:var(--card);stroke:var(--mut);stroke-width:2}.gi.ok{fill:var(--ok);stroke:var(--ok)}.gi.no{fill:var(--bad);stroke:var(--bad);transform-box:fill-box;transform-origin:center;animation:pl .5s 3}
+@keyframes pl{50%{transform:scale(1.5)}}
+.gt{fill:#fff;font-size:13px;font-weight:700}.why{fill:var(--bad);font-size:11px;font-weight:700}.fin{font-size:12px;font-weight:600}
+#dot{fill:var(--acc)}#dot.bad{fill:var(--bad)}
+#dg svg,#flow{cursor:zoom-in}.hint{font-size:12px;color:var(--mut);margin-top:6px}
+#zoom{width:min(1400px,98vw);max-height:96vh;padding:12px;background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:12px}#zoom::backdrop{background:rgba(0,0,0,.7)}#zoom svg{width:100%;height:auto;max-height:82vh}.zx{float:right;margin-bottom:8px}
+.dgw svg text{font-size:13px}.dgw svg .m,.dgw svg .nl,.dgw svg .sgl{font-size:12px}.dgw svg .b{font-size:13px}
+@media(min-width:861px){#dg{position:sticky;top:12px}.cols.wide #dg{position:static}}.cols.wide{grid-template-columns:1fr}.cols.wide #dg{order:-1}#dg svg{max-height:78vh}.cols.wide>.card:not(#dg){max-width:980px}
+.bx{fill:var(--card);stroke:var(--acc);stroke-width:1.5}.bx.rm{stroke:var(--ok)}.cm{fill:var(--card);stroke:var(--acc);stroke-width:2}.cm.mg{stroke:var(--nacl)}.cm.rv{stroke:var(--sgc);stroke-dasharray:3 2}
+.pl{fill:#0b6bcb}.pl.hd{fill:#c25a0c}.pl.rmp{fill:#1a7f37}.pl.br{fill:#8e44ad}.pt{fill:#fff;font-weight:700;font-size:12px}.bk{stroke-dasharray:5 3}
+.chip{display:inline-block;border:1px solid var(--bd);border-radius:999px;padding:2px 12px;font-size:13px}.chip.on{border-color:var(--sgc);color:var(--sgc)}
+.term{background:#0b1220;color:#cfe7ff;padding:10px 14px;border-radius:8px;font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace;min-height:90px;margin:10px 0}.term div{margin-bottom:8px}.term .e{color:#ff9b9b}
+#view svg{cursor:zoom-in}.dgw svg text{font-size:13px}
+</style></head>
+<body><div class="wrap">
+<h1>Git <span>from Zero</span></h1>
+<div class="sub">Learn Git one lesson at a time. Each lesson adds a piece to the diagram, then practise in the sandbox.</div>
+<div class="row" id="tabs"></div><div id="view"></div>
+<dialog id="zoom"><button class="zx" id="zc">Close ✕</button><div id="zb" class="dgw"></div></dialog>
+</div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const L=[
+{t:'What is Git?',c:'Git is a version control system. It keeps the full history of your project as snapshots called commits, so you can see what changed, go back to an earlier state, and work with other people without overwriting each other. A project folder tracked by Git is called a repository.',p:['A repository (repo) is your files plus the history stored in a hidden .git folder','git init creates a new repo, git clone copies an existing one','Git works locally: most commands need no internet','GitHub, GitLab and Bitbucket host remote copies of repos'],a:'Save points in a video game, but for a whole project.',cmd:'git init',q:{k:'Where does Git store the history?',o:['In a .git folder inside your project','Only on GitHub','In the cloud automatically'],a:0,w:'The history lives in the .git folder, on your own machine.'}},
+{t:'Staging and committing',c:'You edit files in the working directory. git add moves chosen changes into the staging area, which is a draft of the next snapshot. git commit then saves the staged changes as a permanent commit with a message.',p:['Working directory: the files you see and edit','Staging area (index): what will go into the next commit','Commit: a snapshot with an author, a time and a message','Write messages that say why, for example: Fix login timeout'],a:'Packing a box (add) before sealing and labelling it (commit).',cmd:'git add app.py\ngit commit -m "Add login page"',q:{k:'What does git add do?',o:['Saves a commit','Moves changes into the staging area','Uploads to GitHub'],a:1,w:'It prepares changes. Nothing is saved to history until you commit.'}},
+{t:'History and HEAD',c:'Every commit points to its parent, which forms a chain. Commits are identified by a hash such as a1f. HEAD is a pointer that says where you are now, usually the latest commit of the current branch.',p:['git log shows the history','git status shows what is modified and staged','git diff shows line by line changes','git show a1f shows one commit'],a:'A chain of save points with a you-are-here marker.',cmd:'git log --oneline --graph',q:{k:'What is HEAD?',o:['The first commit','A pointer to your current position','The remote server'],a:1,w:'HEAD marks the commit or branch you are currently on.'}},
+{t:'Branches',c:'A branch is a movable label that points at a commit. Creating one is instant and cheap, because no files are copied. Work on a branch keeps unfinished changes away from main until they are ready.',p:['main is the default branch name','git switch -c feature creates a branch and moves to it','A new commit moves only the current branch label forward','One branch per feature or fix is a common habit'],a:'A parallel copy of the project where you can experiment.',cmd:'git switch -c feature',q:{k:'What is a branch in Git?',o:['A copy of every file','A movable pointer to a commit','A remote server'],a:1,w:'A branch is only a label, which is why it is so cheap.'}},
+{t:'Merging',c:'Merging joins the work of one branch into another. If main has not moved, Git just slides the pointer forward (a fast-forward). If both branches have new commits, Git creates a merge commit with two parents. If both changed the same lines you must resolve a conflict.',p:['git switch main, then git merge feature','Fast-forward: no new commit is needed','Merge commit: joins two histories','Conflict: edit the marked lines, then git add and git commit'],a:'Two editors combining their versions of one document.',cmd:'git switch main\ngit merge feature',q:{k:'When does Git create a merge commit?',o:['When both branches have new commits','When there are no changes','Always'],a:0,w:'If only one side moved, Git can fast-forward instead.'}},
+{t:'Remotes: push and pull',c:'A remote is a copy of the repo on a server such as GitHub. git clone downloads it. git push uploads your commits. git fetch downloads new commits without touching your files, and git pull is fetch plus merge. The label origin/main shows where the remote main was last seen.',p:['origin is the default name of the remote','git push origin main uploads your main branch','git fetch is safe, git pull also updates your branch','A push is rejected if the remote has commits you lack: pull first'],a:'Your own notebook versus the shared team notebook.',cmd:'git clone https://github.com/user/repo.git\ngit push origin main\ngit pull',q:{k:'What is the difference between fetch and pull?',o:['Pull is fetch plus merge','They are identical','Fetch uploads your work'],a:0,w:'Fetch only downloads. Pull downloads and merges.'}},
+{t:'Pull requests',c:'A pull request (PR) asks the team to review your branch before it is merged into main. It is a feature of GitHub and GitLab, not of Git itself. The usual flow is: branch, commit, push, open a PR, review, merge.',p:['Push your feature branch, then open the PR on the website','Reviewers comment and tests run, and you push fixes to the same branch','Protect main so changes only arrive through PRs','After merging, delete the branch and pull main'],a:'Handing in a draft for review before it is published.',cmd:'git push -u origin feature',q:{k:'Is a pull request part of Git itself?',o:['Yes','No, it is a GitHub or GitLab feature','Only in the newest Git'],a:1,w:'Git has no PRs. Hosting platforms add them.'}},
+{t:'Undoing mistakes',c:'Pick the safest tool. restore throws away uncommitted edits. restore --staged unstages. revert makes a new commit that undoes an old one, which is safe on shared branches. reset moves the branch back and can rewrite history, so avoid it on commits you already pushed.',p:['git restore app.py: discard changes in the working directory','git restore --staged app.py: take a file out of staging','git revert g7d: a new commit that undoes g7d','git reset --hard moves the branch and discards changes: dangerous'],a:'An eraser, an undo button, or a note saying ignore the last page.',cmd:'git revert <commit>',q:{k:'What is the safest way to undo a commit already pushed to main?',o:['git reset --hard','git revert','Delete the repository'],a:1,w:'Revert adds a new commit and keeps history intact.'}}];
+let cur=0,tab='learn',ans={},wide=false;
+
+const at=(l,m)=>` data-l="${l}"${m?` data-m="${m}"`:''}`;
+const R=(l,x,y,w,h,c,m)=>`<rect${at(l,m)} class="${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/>`;
+const T=(l,x,y,s,c='',a='start',m)=>`<text${at(l,m)} class="${c}" x="${x}" y="${y}" text-anchor="${a}">${s}</text>`;
+const P=(l,d,c='ar',m)=>`<path${at(l,m)} class="${c}" d="${d}" marker-end="url(#h)"/>`;
+const PL=(l,x,y,w,t,c,m)=>R(l,x,y,w,22,'pl '+c,m)+T(l,x+w/2,y+16,t,'pt','middle',m);
+const MK='<defs><marker id="h" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="mk" d="M0 0L8 4L0 8z"/></marker></defs>';
+function diagram(){const box=(l,x,n,a,b,c='bx')=>R(l,x,30,110,90,c)+T(l,x+55,54,n,'b','middle')+T(l,x+55,74,a,'m','middle')+T(l,x+55,94,b,'m','middle');
+ let s=`<svg viewBox="0 0 760 420" role="img" aria-label="Git areas and commit history">${MK}`;
+ s+=box(1,10,'Working dir','your files','you edit here')+box(2,220,'Staging area','next snapshot','git add')+box(1,430,'Local repo','.git history','commits')+box(6,640,'Remote','GitHub, GitLab','origin','bx rm');
+ s+=P(2,'M124 62H216')+T(2,170,54,'git add','m','middle')+P(2,'M334 62H426')+T(2,380,54,'git commit','m','middle')+P(6,'M544 62H636')+T(6,590,54,'git push','m','middle');
+ s+=P(6,'M636 98H544','ar bk')+T(6,590,114,'git pull','m','middle')+P(8,'M216 98H124','ar bk')+T(8,170,114,'git restore','m','middle')+P(8,'M426 98H334','ar bk')+T(8,380,114,'git reset','m','middle');
+ s+=T(2,10,150,'Commit history in the local repository','m');
+ [[2,90,230,'a1f','init'],[2,190,230,'b2e','add login'],[3,290,230,'c3d','fix bug'],[4,290,320,'d4a','add form'],[4,390,320,'e5b','style form'],[5,490,230,'f6c','merge feature','mg'],[8,590,230,'g7d','revert merge','rv']].forEach(([l,x,y,id,msg,c])=>s+=`<circle${at(l)} class="cm ${c||''}" cx="${x}" cy="${y}" r="16"/>`+T(l,x,y+5,id,'','middle')+T(l,x,y+36,msg,'m','middle'));
+ s+=P(2,'M174 230H106')+P(3,'M274 230H206')+P(4,'M279 309L201 241')+P(4,'M374 320H306')+P(5,'M474 230H306')+P(5,'M481 241L399 309')+P(8,'M574 230H506');
+ s+=PL(3,240,164,100,'HEAD → main','hd',4)+PL(5,440,164,100,'HEAD → main','hd',7)+PL(8,540,164,100,'HEAD → main','hd')+PL(4,357,268,66,'feature','br')+PL(6,442,282,96,'origin/main','rmp');
+ s+=R(7,500,326,250,34,'pl br',7)+T(7,625,348,'Pull request: feature → main','pt','middle',7)+T(7,625,382,'review · tests · approve','m','middle',7);
+ return s+'</svg>'}
+function paint(){document.querySelectorAll('#dg [data-l]').forEach(e=>{const l=+e.dataset.l,m=+(e.dataset.m||99),n=cur+1;e.classList.toggle('on',n>=l&&n<=m);e.classList.toggle('new',l===n)})}
+function quiz(l){const z=l.q,a=ans[cur],d=a!==undefined;
+ return `<div class="quiz"><b>Check yourself:</b> ${esc(z.k)}${z.o.map((o,i)=>`<button class="opt ${d?(i===z.a?'right':(i===a.pick?'wrong':'')):''}" data-o="${i}" ${d?'disabled':''}>${esc(o)}</button>`).join('')}${d?`<div class="small ${a.pick===z.a?'okc':'badc'}">${a.pick===z.a?'Correct. ':'Not quite. '}${esc(z.w)}</div>`:''}</div>`}
+function learn(){const l=L[cur];
+ return `<div class="row">${L.map((x,i)=>`<button class="${i===cur?'act':''} ${ans[i]&&ans[i].pick===x.q.a?'done':''}" data-i="${i}" title="${esc(x.t)}" aria-label="Lesson ${i+1}: ${esc(x.t)}">${i+1}</button>`).join('')}</div>
+ <div class="cols${wide?' wide':''}"><div class="card lc"><div class="muted small">Lesson ${cur+1} of ${L.length}</div><h2>${esc(l.t)}</h2><p>${esc(l.c)}</p><ul>${l.p.map(p=>`<li>${esc(p)}</li>`).join('')}</ul><div class="an">${esc(l.a)}</div><b>Commands</b><pre>${esc(l.cmd)}</pre>${quiz(l)}
+ <div class="row"><button data-n="-1" ${cur?'':'disabled'}>← Back</button><button class="act" data-n="1" ${cur<L.length-1?'':'disabled'}>Next →</button></div></div>
+ <div class="card dgw" id="dg">${diagram()}<div class="hint">Click the diagram to enlarge. <button data-w="1">${wide?'Side by side':'Wide view'}</button></div></div></div>`}
+
+const G0=()=>({c:[{id:'a',p:[],ln:0}],br:{main:'a'},hd:'main',wd:0,st:0,rem:'a',log:[]});let G=G0();
+const anc=(a,b)=>{const q=[b],seen={};while(q.length){const x=q.pop();if(x===a)return true;if(seen[x])continue;seen[x]=1;G.c.find(c=>c.id===x).p.forEach(y=>q.push(y))}return false};
+const lg=(cmd,msg,bad)=>G.log.unshift({cmd,msg,bad});
+function act(a){const id='abcdefghi'[G.c.length],tip=G.br[G.hd],full=G.c.length>=9;
+ if(a==='reset'){G=G0();return}
+ if(a==='edit'){G.wd=1;lg('edit app.py','The working directory has a change. Git sees the file as modified.')}
+ else if(a==='add'){if(!G.wd)lg('git add .','Nothing to add. Edit a file first.',1);else{G.wd=0;G.st=1;lg('git add .','The change moved to the staging area.')}}
+ else if(a==='commit'){if(!G.st)lg('git commit','Nothing is staged. Run git add first.',1);else if(full)lg('git commit','The sandbox is full. Press Reset.',1);else{G.c.push({id,p:[tip],ln:G.hd==='main'?0:1});G.br[G.hd]=id;G.st=0;lg('git commit -m "change"',`Created commit ${id}. The ${G.hd} label moved forward, and HEAD follows it.`)}}
+ else if(a==='newb'){if(G.br.feature){G.hd='feature';lg('git switch feature','The feature branch already exists, so you switched to it.')}else{G.br.feature=tip;G.hd='feature';lg('git switch -c feature',`Created feature at commit ${tip} and switched to it. No files were copied.`)}}
+ else if(a==='swm'){G.hd='main';lg('git switch main','HEAD now points at main.')}
+ else if(a==='swf'){if(!G.br.feature)lg('git switch feature','There is no feature branch yet. Use git switch -c feature.',1);else{G.hd='feature';lg('git switch feature','HEAD now points at feature.')}}
+ else if(a==='merge'){const f=G.br.feature;if(G.hd!=='main')lg('git merge feature','Switch to main first. You merge INTO the branch you are on.',1);else if(!f)lg('git merge feature','There is no feature branch yet.',1);else if(anc(f,tip))lg('git merge feature','Already up to date.');else if(anc(tip,f)){G.br.main=f;lg('git merge feature','Fast-forward: main just moved to the feature tip. No merge commit was needed.')}else if(full)lg('git merge feature','The sandbox is full. Press Reset.',1);else{G.c.push({id,p:[tip,f],ln:0});G.br.main=id;lg('git merge feature',`Both branches had new work, so Git created merge commit ${id} with two parents.`)}}
+ else if(a==='push'){if(G.rem===G.br.main)lg('git push origin main','Everything up to date.');else{G.rem=G.br.main;lg('git push origin main','Uploaded the new commits. origin/main moved to match main.')}}}
+function labSvg(){const pos={};G.c.forEach((c,i)=>pos[c.id]=[50+i*80,c.ln?210:110]);
+ let s=`<svg viewBox="0 0 760 290" role="img" aria-label="Git sandbox commit graph">${MK}`;
+ G.c.forEach(c=>c.p.forEach(p=>{const[px,py]=pos[p],[cx,cy]=pos[c.id],dx=px-cx,dy=py-cy,n=Math.hypot(dx,dy)||1,ux=dx/n,uy=dy/n;s+=`<path class="ar" d="M${cx+ux*18} ${cy+uy*18}L${px-ux*18} ${py-uy*18}" marker-end="url(#h)"/>`}));
+ G.c.forEach(c=>{const[x,y]=pos[c.id];s+=`<circle class="cm ${c.p.length>1?'mg':''}" cx="${x}" cy="${y}" r="16"/><text x="${x}" y="${y+5}" text-anchor="middle">${c.id}</text>`});
+ const pb=(x,y,w,t,c)=>`<rect class="pl ${c}" x="${x}" y="${y}" width="${w}" height="22" rx="8"/><text class="pt" x="${x+w/2}" y="${y+16}" text-anchor="middle">${t}</text>`,slot={};
+ Object.keys(G.br).forEach(b=>{const t=G.br[b],[x,y]=pos[t],k=slot[t]=(slot[t]??-1)+1,lb=(G.hd===b?'HEAD → ':'')+b,w=lb.length*8+18;s+=pb(x-w/2,y-52-k*26,w,lb,G.hd===b?'hd':'')});
+ const[rx,ry]=pos[G.rem];s+=pb(rx-48,ry+30,96,'origin/main','rmp');
+ return s+'</svg>'}
+function labView(){const B=[['edit','✏ Edit a file'],['add','git add'],['commit','git commit'],['newb','git switch -c feature'],['swm','git switch main'],['swf','git switch feature'],['merge','git merge feature'],['push','git push origin main'],['reset','Reset']];
+ return `<div class="card"><h2>Git sandbox</h2><p class="muted">Press the buttons to run Git commands on a pretend repository, and watch the graph change. Read the message under each command.</p>
+ <div class="row"><span class="chip ${G.wd?'on':''}">Working directory: ${G.wd?'modified':'clean'}</span><span class="chip ${G.st?'on':''}">Staging area: ${G.st?'ready to commit':'empty'}</span><span class="chip">Current branch: ${esc(G.hd)}</span></div>
+ <div class="dgw">${labSvg()}</div><div class="hint">Click the diagram to enlarge.</div>
+ <div class="row">${B.map(b=>`<button data-g="${b[0]}">${b[1]}</button>`).join('')}</div>
+ <div class="term">${G.log.slice(0,6).map(x=>`<div class="${x.bad?'e':''}"><b>$ ${esc(x.cmd)}</b><br>${esc(x.msg)}</div>`).join('')||'Run a command to see what Git says.'}</div>
+ <p class="small"><b>Try this:</b> 1) Edit, add, commit. 2) switch -c feature, then edit, add and commit. 3) switch main, edit, add and commit, then merge feature to get a merge commit. 4) push, and watch origin/main move. Then try merging before main has its own commit to see a fast-forward.</p></div>`}
+
+function render(){$('#tabs').innerHTML=[['learn','Learn'],['lab','Git sandbox']].map(t=>`<button class="${t[0]===tab?'act':''}" data-t="${t[0]}">${t[1]}</button>`).join('');
+ $('#view').innerHTML=tab==='learn'?learn():labView();if(tab==='learn')paint()}
+document.addEventListener('click',e=>{const s=e.target.closest('#view svg');if(s){$('#zb').replaceChildren(s.cloneNode(true));$('#zoom').showModal();return}
+ if(e.target.id==='zc'||e.target.id==='zoom'){$('#zoom').close();return}
+ const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+ if(d.t!==undefined)tab=d.t;else if(d.i!==undefined)cur=+d.i;else if(d.n!==undefined)cur+=+d.n;else if(d.o!==undefined)ans[cur]={pick:+d.o};else if(d.w!==undefined)wide=!wide;else if(d.g!==undefined)act(d.g);else return;render()});
+render();
+</script></body></html>
